@@ -180,23 +180,23 @@ export const PersonaSelector = ({ onShortcutClick, onSosClick, onTransportScroll
       )}
 
       {/* Static Quick Cards Grid */}
-      <div style={{ marginTop: '14px', borderTop: '1px dashed hsl(var(--border) / 0.6)', paddingTop: '14px' }}>
-        <div className="quick-menu-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', margin: '4px 0', display: 'grid' }}>
-          <div className="quick-card quick-card-red" onClick={onSosClick} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🚨</div>
-            <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Emergency</span>
+      <div style={{ marginTop: '16px', borderTop: '1px dashed hsl(var(--border) / 0.5)', paddingTop: '16px' }}>
+        <div className="quick-menu-grid">
+          <div className="quick-card quick-card-red" onClick={onSosClick}>
+            <div className="quick-card-icon-container">🚨</div>
+            <span className="quick-card-label">Emergency</span>
           </div>
-          <div className="quick-card quick-card-blue" onClick={onTransportScroll} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🚌</div>
-            <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Transport</span>
+          <div className="quick-card quick-card-blue" onClick={onTransportScroll}>
+            <div className="quick-card-icon-container">🚌</div>
+            <span className="quick-card-label">Transport</span>
           </div>
-          <div className="quick-card quick-card-green" onClick={() => onShortcutClick('hospitality', 'hotel')} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🏨</div>
-            <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Hotel Stays</span>
+          <div className="quick-card quick-card-green" onClick={() => onShortcutClick('hospitality', 'hotel')}>
+            <div className="quick-card-icon-container">🏨</div>
+            <span className="quick-card-label">Hotel Stays</span>
           </div>
-          <div className="quick-card quick-card-purple" onClick={() => onShortcutClick('directory', 'committees')} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
-            <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>👥</div>
-            <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Committees</span>
+          <div className="quick-card quick-card-purple" onClick={() => onShortcutClick('directory', 'committees')}>
+            <div className="quick-card-icon-container">👥</div>
+            <span className="quick-card-label">Committees</span>
           </div>
         </div>
       </div>
