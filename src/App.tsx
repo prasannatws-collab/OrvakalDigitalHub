@@ -61,7 +61,8 @@ import {
   postalServices,
   banksAndAtms,
   govtSchemes,
-  newsItems
+  newsItems,
+  committees
 } from './data/mockData';
 import type { SchoolTeacher } from './data/mockData';
 import type {
@@ -78,7 +79,7 @@ function App() {
   // Application State
   const [lang, setLang] = useState<Language>('en');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [activeTab, setActiveTab] = useState<'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs'>('home');
+  const [activeTab, setActiveTab] = useState<'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights'>('home');
   const [transitTab, setTransitTab] = useState<'flights' | 'buses' | 'trains'>('flights');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSos, setShowSos] = useState(true);
@@ -87,7 +88,7 @@ function App() {
   const [activePersona, setActivePersona] = useState<'student' | 'farmer' | 'citizen' | 'tourist' | 'officer' | null>(null);
 
   // Sub-tab selectors
-  const [directorySubTab, setDirectorySubTab] = useState<'govt' | 'education' | 'grievance' | 'postal' | 'banks' | 'police' | 'hospital' | 'schemes' | null>(null);
+  const [directorySubTab, setDirectorySubTab] = useState<'govt' | 'education' | 'grievance' | 'postal' | 'banks' | 'police' | 'hospital' | 'schemes' | 'committees' | null>(null);
   const [selectedSchool, setSelectedSchool] = useState<SchoolTeacher | null>(null);
   const [selectedSchemeCategory, setSelectedSchemeCategory] = useState<'farmer' | 'students' | 'women' | 'business' | 'insurance' | 'investment' | 'welfare' | 'all'>('all');
   const [selectedSchemeType, setSelectedSchemeType] = useState<'central' | 'state' | 'bank' | 'postal' | 'all'>('all');
@@ -102,6 +103,7 @@ function App() {
   const [selectedShop, setSelectedShop] = useState<CommercialShop | null>(null);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustrialPlant | null>(null);
   const [sosModalOpen, setSosModalOpen] = useState(false);
+  const [showOrvakalGlanceDetails, setShowOrvakalGlanceDetails] = useState(false);
   
   // Lists updated by user forms (Mock persistence)
   const [localJobs, setLocalJobs] = useState<JobPost[]>(jobs);
@@ -266,7 +268,7 @@ function App() {
   };
 
   // Nav shortcuts
-  const handleShortcutClick = (tabName: 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs', subTabName?: string, query?: string) => {
+  const handleShortcutClick = (tabName: 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights', subTabName?: string, query?: string) => {
     setActiveTab(tabName);
     setSearchQuery(query || '');
     if (tabName === 'directory' && subTabName) setDirectorySubTab(subTabName as any);
@@ -505,34 +507,6 @@ function App() {
                     💼 {t.officer}
                   </button>
 
-                  {/* Direct Shortcuts */}
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('directory', 'grievance')}>
-                    📝 {lang === 'en' ? "Grievance" : lang === 'te' ? "ఫిర్యాదు" : "शिकायत"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('directory', 'schemes')}>
-                    📜 {lang === 'en' ? "Govt Schemes" : lang === 'te' ? "ప్రభుత్వ పథకాలు" : "सरकारी योजनाएं"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('directory', 'banks')}>
-                    🏦 {lang === 'en' ? "Bank & ATM" : lang === 'te' ? "బ్యాంకులు & ఏటీఎంలు" : "बैंक और एटीएम"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'temple')}>
-                    🛕 {lang === 'en' ? "Temples" : lang === 'te' ? "దేవాలయాలు" : "मंदिर"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'mosque')}>
-                    🕌 {lang === 'en' ? "Mosque" : lang === 'te' ? "మసీదు" : "मस्जिद"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'church')}>
-                    ⛪ {lang === 'en' ? "Church" : lang === 'te' ? "చర్చి" : "चर्च"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'auto')}>
-                    🛺 {lang === 'en' ? "Auto Stand" : lang === 'te' ? "ఆటో రవాణా" : "ऑटो स्टैंड"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'car-rental')}>
-                    🚗 {lang === 'en' ? "Cab Transport" : lang === 'te' ? "క్యాబ్ రవాణా" : "कैब परिवहन"}
-                  </button>
-                  <button className="tab-pill" style={{ backgroundColor: 'hsl(var(--primary) / 0.08)', color: 'hsl(var(--primary))', borderColor: 'hsl(var(--primary) / 0.15)' }} onClick={() => handleShortcutClick('hospitality', 'drivers')}>
-                    👤 {lang === 'en' ? "Drivers" : lang === 'te' ? "డ్రైవర్లు" : "चालक"}
-                  </button>
                 </div>
 
                 {/* Dynamic Recommendation Output Box */}
@@ -659,6 +633,28 @@ function App() {
                     </div>
                   </div>
                 )}
+
+                {/* Static Quick Cards Grid */}
+                <div style={{ marginTop: '14px', borderTop: '1px dashed hsl(var(--border) / 0.6)', paddingTop: '14px' }}>
+                  <div className="quick-menu-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', margin: '4px 0', display: 'grid' }}>
+                    <div className="quick-card quick-card-red" onClick={() => setSosModalOpen(true)} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🚨</div>
+                      <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Emergency</span>
+                    </div>
+                    <div className="quick-card quick-card-blue" onClick={() => { handleShortcutClick('home'); setTimeout(() => { const el = document.querySelector('.transport-card'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 150); }} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🚌</div>
+                      <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Transport</span>
+                    </div>
+                    <div className="quick-card quick-card-green" onClick={() => handleShortcutClick('hospitality', 'hotel')} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>🏨</div>
+                      <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Hotel Stays</span>
+                    </div>
+                    <div className="quick-card quick-card-purple" onClick={() => handleShortcutClick('directory', 'committees')} style={{ minHeight: '72px', padding: '8px 4px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                      <div className="quick-card-icon" style={{ fontSize: '1.2rem', margin: 0 }}>👥</div>
+                      <span className="quick-card-label" style={{ fontSize: '0.62rem', fontWeight: 700, marginTop: '4px' }}>Committees</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Bulletin Board Notice List */}
@@ -778,8 +774,33 @@ function App() {
 
 
               {/* Quick stats panel */}
-              <div className="card">
-                <h3 className="section-title" style={{ marginTop: 0 }}>{t.quickStats}</h3>
+              <div className="card" style={{ border: '2px solid hsl(var(--primary) / 0.18)', boxShadow: '0 8px 24px -6px hsl(var(--primary) / 0.08)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <h3 className="section-title" style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800 }}>{t.quickStats}</h3>
+                  <button
+                    className="btn btn-primary"
+                    style={{
+                      flex: 'none',
+                      width: 'auto',
+                      fontSize: '0.72rem',
+                      padding: '5px 12px',
+                      borderRadius: '20px',
+                      background: 'linear-gradient(135deg, #be123c 0%, #e11d48 100%)',
+                      color: 'white',
+                      fontWeight: 800,
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 10px rgba(190, 18, 60, 0.25)',
+                      transition: 'transform 0.2s',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                    onClick={() => setActiveTab('insights')}
+                  >
+                    <span>💡 Hub Insights</span>
+                  </button>
+                </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
                   <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', textAlign: 'center', cursor: 'pointer' }} onClick={() => handleShortcutClick('home', undefined, 'industry')}>
                     <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{industries.length}</div>
@@ -945,6 +966,18 @@ function App() {
                       <span className="govt-menu-title">{lang === 'en' ? "Primary Health Center (PHC)" : lang === 'te' ? "ప్రాథమిక ఆరోగ్య కేంద్రం (PHC)" : "प्राथमिक स्वास्थ्य केंद्र (PHC)"}</span>
                       <span className="govt-menu-desc">
                         {lang === 'en' ? "OPD timings, bed capacity, doctors list, and medical facilities." : lang === 'te' ? "ఓర్వకల్లు ప్రభుత్వ ఆసుపత్రి పని వేళలు, వైద్యులు మరియు వసతుల వివరాలు." : "ओरवाकल सरकारी अस्पताल के समय, डॉक्टरों और सुविधाओं का विवरण।"}
+                      </span>
+                    </div>
+                    <span className="govt-menu-arrow">➡️</span>
+                  </div>
+
+                  {/* 9. Committees */}
+                  <div className="govt-menu-card" onClick={() => setDirectorySubTab('committees')}>
+                    <div className="govt-menu-icon">👥</div>
+                    <div className="govt-menu-info">
+                      <span className="govt-menu-title">{lang === 'en' ? "Committees & Clubs" : lang === 'te' ? "కమిటీలు & క్లబ్‌లు" : "समितियां और क्लब"}</span>
+                      <span className="govt-menu-desc">
+                        {lang === 'en' ? "Village administration, temple, youth, security and business committees." : lang === 'te' ? "దేవాలయం, రక్షణ, విద్యా, క్రీడలు మరియు వ్యాపార కమిటీల వివరాలు." : "मंदिर, सुरक्षा, शिक्षा, खेल और व्यावसायिक समितियों का विवरण।"}
                       </span>
                     </div>
                     <span className="govt-menu-arrow">➡️</span>
@@ -1292,6 +1325,45 @@ function App() {
                           <span className={`badge ${g.status === 'Submitted' ? 'badge-info' : 'badge-success'}`}>{g.status}</span>
                         </div>
                       ))}
+                    </div>
+                  )}
+
+                  {directorySubTab === 'committees' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <h3 style={{ fontSize: '0.9rem', color: 'hsl(var(--primary))', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        👥 {lang === 'en' ? "Committees & Clubs" : lang === 'te' ? "కమిటీలు & క్లబ్‌లు" : "समितियां और क्लब"}
+                      </h3>
+                      
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {committees.map((com) => (
+                          <div key={com.id} className="card" style={{ padding: '14px', borderLeft: '4px solid hsl(var(--primary))' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                              <h4 style={{ fontSize: '0.82rem', color: 'hsl(var(--foreground))', fontWeight: 800, margin: 0 }}>
+                                {getTxt(com.name)}
+                              </h4>
+                              <span className="badge badge-info" style={{ fontSize: '0.62rem' }}>
+                                {com.membersCount} {lang === 'en' ? "Members" : lang === 'te' ? "సభ్యులు" : "सदस्य"}
+                              </span>
+                            </div>
+                            
+                            <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginTop: '6px', marginBottom: '8px', lineHeight: 1.3 }}>
+                              {getTxt(com.purpose)}
+                            </p>
+                            
+                            <div style={{ borderTop: '1px solid hsl(var(--border) / 0.6)', paddingTop: '8px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '8px', fontSize: '0.68rem' }}>
+                              <div>
+                                <strong>👤 President:</strong> {getTxt(com.president)}
+                              </div>
+                              <div>
+                                <strong>📅 Meetings:</strong> {getTxt(com.meetings)}
+                              </div>
+                              <a href={`tel:${com.phone}`} style={{ textDecoration: 'none', backgroundColor: 'hsl(var(--primary) / 0.1)', color: 'hsl(var(--primary))', padding: '4px 8px', borderRadius: '4px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                <Phone size={10} /> {com.phone}
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </>
@@ -2072,6 +2144,165 @@ function App() {
             </div>
           )}
 
+          {/* TAB 6: HUB HIGHLIGHTS & INSIGHTS */}
+          {activeTab === 'insights' && (
+            <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              
+              {/* Back button & Title */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid hsl(var(--border) / 0.8)', paddingBottom: '12px' }}>
+                <button
+                  className="btn btn-secondary"
+                  style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  onClick={() => setActiveTab('home')}
+                >
+                  ⬅️ {lang === 'en' ? "Back to Dashboard" : lang === 'te' ? "డ్యాష్‌బోర్డ్‌కు తిరిగి వెళ్ళు" : "डैशबोर्ड पर वापस जाएं"}
+                </button>
+                <h3 style={{ margin: 0, fontSize: '0.92rem', color: 'hsl(var(--primary))', fontWeight: 800 }}>
+                  💡 Orvakal Industrial Hub
+                </h3>
+              </div>
+
+              {/* 1. Context on Industrial Presence */}
+              <div className="card" style={{ borderLeft: '4px solid #be123c', padding: '14px' }}>
+                <h4 style={{ fontSize: '0.82rem', color: '#be123c', fontWeight: 800, margin: 0 }}>
+                  🏢 Context on Industrial Presence
+                </h4>
+                <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginTop: '6px', lineHeight: 1.4, margin: '6px 0 0 0' }}>
+                  It is important to distinguish between large-scale anchor industries and the numerous smaller engineering and manufacturing units already operating in the Kurnool district, many of which serve the regional industrial ecosystem.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', paddingLeft: '8px', borderLeft: '2px solid hsl(var(--border))' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Diverse Sectoral Base:</strong>
+                    <span style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginLeft: '4px' }}>
+                      Historically, the area has hosted various small to medium-scale machinery manufacturers, foundries, and fabrication units. You may find local listings for entities involved in engineering, packaging, and industrial equipment supplying to the region.
+                    </span>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Upcoming Growth:</strong>
+                    <span style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginLeft: '4px' }}>
+                      The state government is actively marketing the hub to reach a massive investment target of ₹50,000 crore. Consequently, many more "registrations" and land allotments are expected as the infrastructure (power, water, and logistics) is finalized.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Key Companies Recently Linked to Orvakal */}
+              <div className="card" style={{ borderLeft: '4px solid #0369a1', padding: '14px' }}>
+                <h4 style={{ fontSize: '0.82rem', color: '#0369a1', fontWeight: 800, margin: 0 }}>
+                  🏭 Key Companies Recently Linked to Orvakal
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                  <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
+                    <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Virupaksha Organics Ltd</strong>
+                    <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                      A Hyderabad-based company that has received approval for the allotment of over 100 acres in the Guttapadu Industrial Cluster. They are establishing a major manufacturing facility for Active Pharmaceutical Ingredients (APIs) and organic chemicals, with a substantial investment commitment (approx. ₹1,225 crore) creating 1,500+ jobs.
+                    </p>
+                  </div>
+                  <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
+                    <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Sigachi Industries Ltd</strong>
+                    <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                      Another Hyderabad-based firm specializing in pharmaceutical excipients, such as microcrystalline cellulose (MCC). They are expanding their operations to the Orvakal node to establish a facility for Bulk Drugs, Drug Intermediates, and Specialty Chemicals on approximately 25 acres (Plot A-10).
+                    </p>
+                  </div>
+                  <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
+                    <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Sri Mandava Bio-Tech & Partners</strong>
+                    <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                      Developing high-value agro-processing and biological packaging operations to leverage the local logistics networks and primary agricultural produce in the Kurnool district.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Key Infrastructure & Support Features */}
+              <div className="card" style={{ borderLeft: '4px solid #15803d', padding: '14px' }}>
+                <h4 style={{ fontSize: '0.82rem', color: '#15803d', fontWeight: 800, margin: 0 }}>
+                  🔌 Key Infrastructure & Support Features
+                </h4>
+                <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginTop: '6px', lineHeight: 1.4, margin: '6px 0 0 0' }}>
+                  To attract investment, the Andhra Pradesh government provides a business-friendly environment at the Orvakal Industrial Hub by focusing on "plug-and-play" infrastructure and strategic policy support.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Power & Water:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                      Dedicated, reliable power supply and water allocation (sourced from the Srisailam foreshore/Muchumarri project) are key priorities for industrial utility.
+                    </p>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Logistics:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                      The hub is designed with integrated logistics zones, internal road networks, and storm drainage systems to support heavy and light manufacturing.
+                    </p>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Waste Management:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                      Planned Common Effluent Treatment Plants (CETPs) and bio-waste disposal facilities are included in the master plan to meet environmental compliance standards.
+                    </p>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Sector-Specific Parks:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                      The hub includes dedicated clusters like the Guttapadu MSME Park, which is specifically designed to provide smaller enterprises with ready-to-use land and supporting utilities at subsidized rates to encourage rapid scaling.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Policy Incentives & Land Allotment */}
+              <div className="card" style={{ borderLeft: '4px solid #6d28d9', padding: '14px' }}>
+                <h4 style={{ fontSize: '0.82rem', color: '#6d28d9', fontWeight: 800, margin: 0 }}>
+                  ⚖️ Policy Incentives & Land Allotment
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• MSME Support:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                      Incentives for small and medium-sized enterprises are generally aligned with state industrial policies (such as the Industrial Development Policy), which often include subsidies on capital investment, power cost reimbursements, and interest subvention for loans.
+                    </p>
+                  </div>
+                  <div>
+                    <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Land Allotment:</strong>
+                    <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                      The Andhra Pradesh Industrial Infrastructure Corporation (APIIC) acts as the nodal agency, facilitating land allotment and ensuring that the land is properly cleared for industrial use.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Getting Started & Resources */}
+              <div className="card" style={{ borderLeft: '4px solid #b45309', padding: '14px' }}>
+                <h4 style={{ fontSize: '0.82rem', color: '#b45309', fontWeight: 800, margin: 0 }}>
+                  🔗 Getting Started & Resources
+                </h4>
+                <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', margin: '4px 0' }}>
+                  For companies interested in setting up operations, the following resources are typically used to access official incentive details and land application processes:
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                  <div style={{ fontSize: '0.7rem' }}>
+                    <strong style={{ color: 'hsl(var(--foreground))' }}>APIIC (Andhra Pradesh Industrial Infrastructure Corporation):</strong>
+                    <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
+                      The primary authority for land allotments and infrastructure development. You can monitor their site for active RFPs (Requests for Proposal) and land availability.
+                    </p>
+                  </div>
+                  <div style={{ fontSize: '0.7rem' }}>
+                    <strong style={{ color: 'hsl(var(--foreground))' }}>Andhra Pradesh e-Procurement Portal:</strong>
+                    <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
+                      Often used for bidding on industrial projects or accessing tender documents related to the development of the Orvakal hub.
+                    </p>
+                  </div>
+                  <div style={{ fontSize: '0.7rem' }}>
+                    <strong style={{ color: 'hsl(var(--foreground))' }}>Invest India / India Investment Grid (IIG):</strong>
+                    <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
+                      A national platform that tracks major infrastructure projects and often lists specific investment opportunities and contact details for the project sponsors.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          )}
+
         </main>
 
         {/* DETAILS OVERLAYS / MODALS */}
@@ -2272,13 +2503,13 @@ function App() {
 
         {/* SOS Emergency Modal */}
         {sosModalOpen && (
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(239, 68, 68, 0.85)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyItems: 'center', padding: '24px' }}>
-            <div className="card fade-in" style={{ width: '100%', backgroundColor: 'hsl(var(--card))', border: '2px solid #ef4444' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <div className="card fade-in" style={{ width: '100%', backgroundColor: 'hsl(var(--card))', border: '2px solid #fecaca', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ fontSize: '1.1rem', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <h2 style={{ fontSize: '1.1rem', color: '#be123c', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
                   <ShieldAlert size={20} /> emergency helplines
                 </h2>
-                <button className="icon-btn" onClick={() => setSosModalOpen(false)} style={{ borderColor: '#ef4444', color: '#ef4444' }}><X size={12} /></button>
+                <button className="icon-btn" onClick={() => setSosModalOpen(false)} style={{ borderColor: '#fca5a5', color: '#dc2626', backgroundColor: '#ffe4e6' }}><X size={12} /></button>
               </div>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px' }}>
@@ -2288,7 +2519,7 @@ function App() {
                       <strong style={{ fontSize: '0.8rem', color: 'hsl(var(--foreground))' }}>{getTxt(emg.name)}</strong>
                       <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{getTxt(emg.location)}</div>
                     </div>
-                    <a href={`tel:${emg.phone}`} style={{ backgroundColor: '#ef4444', color: 'white', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <a href={`tel:${emg.phone}`} style={{ backgroundColor: '#ffe4e6', color: '#be123c', border: '1px solid #fecaca', padding: '6px 12px', borderRadius: '6px', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Phone size={10} /> {emg.phone}
                     </a>
                   </div>
@@ -2297,6 +2528,51 @@ function App() {
               
               <div style={{ fontSize: '0.65rem', textAlign: 'center', color: 'hsl(var(--muted-foreground))', marginTop: '10px' }}>
                 Click to call directly. Free emergency service numbers function offline.
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Orvakal At A Glance / Hub Insights Details Modal */}
+        {showOrvakalGlanceDetails && (
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+            <div className="card fade-in" style={{ width: '100%', maxWidth: '480px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '1rem', color: 'hsl(var(--primary))', margin: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  💡 Hub Insights
+                </h3>
+                <button className="icon-btn" onClick={() => setShowOrvakalGlanceDetails(false)} style={{ width: '24px', height: '24px' }}><X size={12} /></button>
+              </div>
+              
+              <div style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))', lineHeight: 1.4, maxHeight: '350px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px', paddingRight: '4px' }}>
+                <p style={{ margin: 0 }}>
+                  The Orvakal Industrial Hub is in a significant phase of expansion, transitioning into a multi-sector industrial node. While many units are currently in the planning or foundational stages, several companies have been formally linked to the site, particularly in the pharmaceutical and food processing sectors.
+                </p>
+                
+                <strong style={{ fontSize: '0.8rem', color: 'hsl(var(--primary))', borderBottom: '1px dashed hsl(var(--border) / 0.6)', paddingBottom: '4px', marginTop: '6px' }}>
+                  Key Companies Recently Linked to Orvakal:
+                </strong>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <strong style={{ color: 'hsl(var(--foreground))' }}>1. Virupaksha Organics Ltd:</strong>
+                  <p style={{ margin: '0 0 0 8px', fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))' }}>
+                    A Hyderabad-based company that has received approval for the allotment of over 100 acres in the Guttapadu Industrial Cluster. They are establishing a major manufacturing facility for Active Pharmaceutical Ingredients (APIs) and organic chemicals, with a substantial investment commitment.
+                  </p>
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <strong style={{ color: 'hsl(var(--foreground))' }}>2. Sigachi Industries Ltd:</strong>
+                  <p style={{ margin: '0 0 0 8px', fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))' }}>
+                    Another Hyderabad-based firm specializing in pharmaceutical excipients, such as microcrystalline cellulose (MCC). They are expanding their operations to the Orvakal node to serve pharmaceutical, food, and nutraceutical markets.
+                  </p>
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <strong style={{ color: 'hsl(var(--foreground))' }}>3. Sri Mandava Bio-Tech & Partners:</strong>
+                  <p style={{ margin: '0 0 0 8px', fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))' }}>
+                    Engaged in developing biological and agro-processing facilities to leverage local agricultural output and provide high-value organic supplements.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
