@@ -1,3 +1,8 @@
+import { stateSchemes } from './schemes/stateSchemes';
+import { centralSchemes } from './schemes/centralSchemes';
+import { bankSchemes } from './schemes/bankSchemes';
+import { postalSchemes } from './schemes/postalSchemes';
+
 export interface LocalizedText {
   en: string;
   te: string;
@@ -6,8 +11,25 @@ export interface LocalizedText {
 
 export type Language = 'en' | 'te' | 'hi';
 
+export interface FinancialScheme {
+  name: LocalizedText;
+  description: LocalizedText;
+  rateOfInterest?: string;
+  benefits: LocalizedText;
+}
+
+export interface GovtOffice {
+  id: string;
+  name: LocalizedText;
+  location: LocalizedText;
+  timings: LocalizedText;
+  phone: string;
+  icon: string;
+}
+
 export interface GovtOfficer {
   id: string;
+  officeId?: string;
   name: LocalizedText;
   designation: LocalizedText;
   department: LocalizedText;
@@ -44,6 +66,7 @@ export interface SchoolTeacher {
 export interface GovtScheme {
   id: string;
   title: LocalizedText;
+  type?: 'state' | 'central' | 'bank' | 'postal';
   category: 'farmer' | 'students' | 'women' | 'business' | 'insurance' | 'investment' | 'welfare';
   description: LocalizedText;
   benefits: LocalizedText;
@@ -464,7 +487,7 @@ export const translations = {
     postOffice: "Post Office & Postal Services",
     banks: "Banks & ATMs",
     grievance: "Panchayat Grievance Desk",
-    govtOffices: "Government Offices & Officers",
+    govtOffices: "Government Offices",
     schoolsEdu: "Schools & Education Centres",
 
     // FLIGHT STUFF
@@ -486,7 +509,20 @@ export const translations = {
     greetingEvening: "Good Evening! Relax after a long day.",
     greetingNight: "Good Night! Rest well.",
     placesOfWorship: "Places of Worship",
-    activeIndustriesList: "Active Mega Industries"
+    activeIndustriesList: "Active Mega Industries",
+
+    // NEW TRANSLATIONS FOR PHASE 2
+    visitingOfficer: "Visiting Officer",
+    visitorLink: "Visitor",
+    committees: "Committees",
+    transport: "Transport",
+    allSchemes: "All Schemes",
+    stateSchemes: "State Schemes",
+    centralSchemes: "Central Schemes",
+    bankSchemes: "Bank Schemes",
+    postalSchemes: "Postal Schemes",
+    fertilizerGuide: "Fertilizer Guide",
+    commercialCrops: "Commercial Crops"
   },
   te: {
     title: "ఓర్వకల్లు డిజిటల్ హబ్",
@@ -623,7 +659,7 @@ export const translations = {
     cat_boutique: "బోటిక్ & లేడీస్ టైలర్స్",
     cat_clothing: "బట్టల దుకాణాలు",
     cat_wholesaler: "హోల్‌సేల్ & కిరాణా వర్తకులు",
-    cat_hardware: "హార్డ్‌వేర్ & ఎలక్ట్రికల్స్",
+    cat_hardware: "హార్డ్‌വേర్ & ఎలక్ట్రికల్స్",
     cat_stationery: "స్టేషనరీ & జిరాక్స్",
     cat_event_rental: "ఈవెంట్స్ సప్లైస్ (డెకరేషన్/సౌండ్)",
     cat_car_rental: "కార్ & వాహనాల అద్దెలు",
@@ -665,7 +701,20 @@ export const translations = {
     greetingEvening: "శుభ సాయంత్రం! కాసేపు విశ్రాంతి తీసుకోండి.",
     greetingNight: "శుభ రాత్రి! సుఖ నిద్ర.",
     placesOfWorship: "ఆరాధనా స్థలాలు",
-    activeIndustriesList: "క్రియాశీల మెగా పరిశ్రమలు"
+    activeIndustriesList: "క్రియాశీల మెగా పరిశ్రమలు",
+
+    // NEW TRANSLATIONS FOR PHASE 2
+    visitingOfficer: "సందర్శక అధికారి",
+    visitorLink: "సందర్శకుడు",
+    committees: "కమిటీలు",
+    transport: "రవాణా",
+    allSchemes: "అన్ని పథకాలు",
+    stateSchemes: "రాష్ట్ర పథకాలు",
+    centralSchemes: "కేంద్ర పథకాలు",
+    bankSchemes: "బ్యాంక్ పథకాలు",
+    postalSchemes: "పోస్టల్ పథకాలు",
+    fertilizerGuide: "ఎరువుల మార్గదర్శి",
+    commercialCrops: "వాణిజ్య పంటలు"
   },
   hi: {
     title: "ओरवाकल डिजिटल हब",
@@ -724,7 +773,7 @@ export const translations = {
     crop: "फसल / वस्तु",
     priceRange: "मूल्य (प्रति क्विंटल / किलो)",
     trend: "रुझान",
-    addJob: "नौकरी पोस्ट करें",
+    addJob: "नौकरियाँ पोस्ट करें",
     addLabour: "श्रमिक पंजीकरण",
     addRental: "किराया / कमरा पोस्ट करें",
     jobTitle: "पद",
@@ -800,16 +849,16 @@ export const translations = {
     cat_banquet: "बैंक्वेट और इवेंट हॉल",
     cat_tuitions: "ट्यूशन और कोचिंग",
     cat_boutique: "बुटीक और लेडीज टेलर्स",
-    cat_clothing: "कपड़े की दुकानें",
-    cat_wholesaler: "थोक और किराना थोक विक्रेता",
+    cat_clothing: "कपड़ों की दुकानें",
+    cat_wholesaler: "थोक और किराना व्यापारी",
     cat_hardware: "हार्डवेयर और इलेक्ट्रिकल्स",
-    cat_stationery: "स्टेशनरी और फोटोकॉपी",
-    cat_event_rental: "इवेंट सप्लाई (तंबू/साउंड)",
-    cat_car_rental: "कार और वाहन किराए पर लें",
+    cat_stationery: "स्टेशनरी और ज़ेरॉक्स",
+    cat_event_rental: "इवेंट आपूर्ति (तंबू / ध्वनि)",
+    cat_car_rental: "कार और वाहन किराया",
     cat_driving_school: "ड्राइविंग स्कूल",
-    cat_medical: "दवा की दुकानें",
-    cat_dairy: "दुग्ध डेयरियां और संग्रह केंद्र",
-    cat_water_supplier: "मिनरल वाटर और टैंकर",
+    cat_medical: "मेडिकल स्टोर",
+    cat_dairy: "दूध डेयरियां",
+    cat_water_supplier: "पानी के कैन and टैंकर",
     cat_laundry: "कपड़े धोने और ड्राई क्लीनिंग",
     cat_temple: "मंदिर",
     cat_mosque: "मस्जिद",
@@ -817,16 +866,16 @@ export const translations = {
     cat_pesticide: "कीटनाशक और बीज",
     cat_courier: "कूरियर और कार्गो",
     cat_auto: "ऑटो स्टैंड और ऑटो",
-    cat_drivers: "ड्राइवर और चालक",
+    cat_drivers: "चालक और चौफ़र",
     govtSchemes: "सरकारी योजनाएं",
     postOffice: "डाकघर और डाक सेवाएं",
     banks: "बैंक और एटीएम",
     grievance: "पंचायत शिकायत डेस्क",
-    govtOffices: "सरकारी कार्यालय और अधिकारी",
+    govtOffices: "सरकारी कार्यालय",
     schoolsEdu: "स्कूल और शिक्षा केंद्र",
 
     // FLIGHT STUFF
-    flightStatus: "कर्नूल हवाई सेवा स्थिति",
+    flightStatus: "उड़ान पारगमन डेस्क",
     flightOnTime: "समय पर",
     flightDelayed: "विलंबित",
 
@@ -835,22 +884,103 @@ export const translations = {
     flightsTab: "उड़ानें (KJB)",
     busesTab: "बसें (APSRTC)",
     trainsTab: "ट्रेनें (KRNT)",
-    nearestStation: "निकटतम रेलवे स्टेशन: कर्नूल सिटी (KRNT) - 25 किमी",
+    nearestStation: "निकटतम रेलवे स्टेशन: कर्नूल शहर (KRNT) - 25 किमी",
     trainNo: "ट्रेन संख्या",
     daysRun: "दिन",
     govtMsp: "न्यूनतम समर्थन मूल्य (MSP)",
     cropHoliday: "फसल अवकाश और सलाह",
-    greetingMorning: "सुप्रभात! आपका दिन मंगलमय हो।",
+    greetingMorning: "सुप्रभात! आपका दिन उत्पादक रहे।",
     greetingEvening: "शुभ संध्या! एक लंबे दिन के बाद आराम करें।",
     greetingNight: "शुभ रात्रि! अच्छी नींद लें।",
     placesOfWorship: "पूजा स्थल",
-    activeIndustriesList: "सक्रिय मेगा उद्योग"
+    activeIndustriesList: "सक्रिय मेगा उद्योग",
+
+    // NEW TRANSLATIONS FOR PHASE 2
+    visitingOfficer: "आगंतुक अधिकारी",
+    visitorLink: "आगंतुक",
+    committees: "समितियां",
+    transport: "परिवहन",
+    allSchemes: "सभी योजनाएं",
+    stateSchemes: "राज्य योजनाएं",
+    centralSchemes: "केंद्र योजनाएं",
+    bankSchemes: "बैंक योजनाएं",
+    postalSchemes: "डाक योजनाएं",
+    fertilizerGuide: "उर्वरक गाइड",
+    commercialCrops: "वाणिज्यिक फसलें"
   }
 };
+
+export const govtOffices: GovtOffice[] = [
+  {
+    id: "office-gp",
+    name: { en: "Gram Panchayat Office", te: "గ్రామ పంచాయతీ కార్యాలయం", hi: "ग्राम पंचायत कार्यालय" },
+    location: { en: "Main Road, Orvakal", te: "మెయిన్ రోడ్, ఓర్వకల్లు", hi: "मुख्य मार्ग, ओरवाकल" },
+    timings: { en: "10:00 AM - 05:00 PM (Sunday Closed)", te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)", hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)" },
+    phone: "+91 9440123456",
+    icon: "Building2"
+  },
+  {
+    id: "office-sach",
+    name: { en: "Gram Sachivalayam (Village Secretariat)", te: "గ్రామ సచివాలయం", hi: "ग्राम सचिवालय" },
+    location: { en: "Panchayat Compound, Orvakal", te: "పంచాయతీ ఆవరణ, ఓర్వకల్లు", hi: "पंचायत परिसर, ओरवाकल" },
+    timings: { en: "10:00 AM - 05:00 PM (Sunday Closed)", te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)", hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)" },
+    phone: "+91 9440654321",
+    icon: "ShieldAlert"
+  },
+  {
+    id: "office-rbk",
+    name: { en: "Rythu Bharosa Kendram (RBK)", te: "రైతు భరోసా కేంద్రం (RBK)", hi: "रायथू भरोसा केंद्र (आरबीके)" },
+    location: { en: "Mandi Bypass Road, Orvakal", te: "మండి బైపాస్ రోడ్, ఓర్వకల్లు", hi: "मंडी बाईपास रोड, ओरवाकल" },
+    timings: { en: "08:00 AM - 06:00 PM (Daily)", te: "ఉదయం 8:00 - సాయంత్రం 6:00 (ప్రతిరోజూ)", hi: "सुबह 8:00 - शाम 6:00 (प्रतिदिन)" },
+    phone: "+91 9849901235",
+    icon: "Sprout"
+  },
+  {
+    id: "office-sro",
+    name: { en: "Sub-Registrar Office (SRO)", te: "సబ్-రిజిస్ట్రార్ కార్యాలయం", hi: "उप-पंजीयक कार्यालय" },
+    location: { en: "SRO Complex, Old Highway Junction, Orvakal", te: "ఎస్ఆర్ఓ కాంప్లెక్స్, పాత హైవే జంక్షన్, ఓర్వకల్లు", hi: "एसआरओ कॉम्प्लेक्स, पुराना हाईवे जंक्शन, ओरवाकल" },
+    timings: { en: "10:00 AM - 05:00 PM (Sunday Closed)", te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)", hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)" },
+    phone: "+91 8518290444",
+    icon: "FileText"
+  },
+  {
+    id: "office-mro",
+    name: { en: "Mandal Revenue Office (MRO Tahsildar)", te: "మండల రెవెన్యూ కార్యాలయం (MRO)", hi: "मंडल राजस्व कार्यालय (एमआरओ)" },
+    location: { en: "Court Road, Orvakal", te: "కోర్టు రోడ్, ఓర్వకల్లు", hi: "Court Road, ओरवाकल" },
+    timings: { en: "10:00 AM - 05:00 PM (Sunday Closed)", te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)", hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)" },
+    phone: "+91 8518290555",
+    icon: "Landmark"
+  },
+  {
+    id: "office-mpdo",
+    name: { en: "Mandal Parishad Development Office (MPDO)", te: "మండల పరిషత్ అభివృద్ధి కార్యాలయం (MPDO)", hi: "मंडल परिषद विकास कार्यालय" },
+    location: { en: "Mandal Parishad Complex, Orvakal", te: "మండల పరిషత్ కార్యాలయం, ఓర్వకల్లు", hi: "मंडल परिषद परिसर, ओरवाकल" },
+    timings: { en: "10:00 AM - 05:00 PM (Sunday Closed)", te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)", hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)" },
+    phone: "+91 8518290666",
+    icon: "Activity"
+  },
+  {
+    id: "office-ms",
+    name: { en: "MeeSeva Center", te: "మీసేవ కేంద్రం", hi: "मीसेवा केंद्र" },
+    location: { en: "Opposite SBI, Main Road, Orvakal", te: "స్టేట్ బ్యాంక్ ఎదురుగా, మెయిన్ రోడ్, ఓర్వకల్లు", hi: "भारतीय स्टेट बैंक के सामने, मुख्य मार्ग, ओरवाकल" },
+    timings: { en: "08:30 AM - 07:30 PM (Sunday Closed)", te: "ఉదయం 8:30 - రాత్రి 7:30 (ఆదివారం సెలవు)", hi: "सुबह 8:30 - शाम 7:30 (रविवार बंद)" },
+    phone: "+91 8518290333",
+    icon: "Clock"
+  },
+  {
+    id: "office-apiic",
+    name: { en: "APIIC Office", te: "APIIC కార్యాలయం", hi: "एपीआईआईसी कार्यालय" },
+    location: { en: "Bypass Road, Orvakal", te: "బైపాస్ రోడ్, ఓర్వకల్లు", hi: "बाईपास रोड, ओरवाकल" },
+    timings: { en: "09:00 AM - 06:00 PM (Sunday Closed)", te: "ఉదయం 9:00 - సాయంత్రం 6:00 (रविवार बंद)", hi: "सुबह 9:00 - शाम 6:00 (रविवार बंद)" },
+    phone: "+91 9848098765",
+    icon: "Building2"
+  }
+];
 
 export const govtOfficers: GovtOfficer[] = [
   {
     id: "govt-1",
+    officeId: "office-gp",
     name: {
       en: "Mr. B. Srinivasa Rao",
       te: "శ్రీ బి. శ్రీనివాసరావు",
@@ -891,6 +1021,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-2",
+    officeId: "office-gp",
     name: {
       en: "Mrs. K. Lakshmi Prasad",
       te: "శ్రీమతి కె. లక్ష్మీ ప్రసాద్",
@@ -931,6 +1062,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-3",
+    officeId: "office-apiic",
     name: {
       en: "Mr. Ramesh Naidu",
       te: "శ్రీ రమేష్ నాయుడు",
@@ -971,6 +1103,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-4",
+    officeId: "office-ms",
     name: {
       en: "Orvakal MeeSeva / E-Seva Center",
       te: "ఓర్వకల్లు మీసేవ / ఈ-సేవ కేంద్రం",
@@ -1011,6 +1144,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-5",
+    officeId: "office-rbk",
     name: {
       en: "Rythu Bharosa Kendram (RBK-1)",
       te: "రైతు భరోసా కేంద్రం (RBK-1)",
@@ -1031,7 +1165,7 @@ export const govtOfficers: GovtOfficer[] = [
     permissions: [
       { en: "Seed & Fertilizer subsidies booking", te: "విత్తనాలు & ఎరువుల రాయితీ బుకింగ్", hi: "बीज और उर्वरक सब्सिडी बुकिंग" },
       { en: "Crop Booking (E-Panta registration)", te: "ఈ-పంట నమోదు (Crop Booking)", hi: "फसल बुकिंग (ई-पंटा पंजीकरण)" },
-      { en: "Soil health card testing dispatch", te: "మట్టి పరీక్షలు & సలహాలు", hi: "मृदा स्वास्थ्य कार्ड परीक्षण प्रेषण" }
+      { en: "Soil health card testing dispatch", te: "మట్టి పరీక్షలు & సలహాలు", hi: "మట్టి పరీక్షలు & సలహాలు" }
     ],
     location: {
       en: "Rythu Bharosa Kendram Building, Mandi Bypass Road, Orvakal",
@@ -1051,6 +1185,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-6",
+    officeId: "office-sro",
     name: {
       en: "Sub-Registrar Office (SRO Orvakal)",
       te: "సబ్-రిజిస్ట్రార్ కార్యాలయం (SRO ఓర్వకల్లు)",
@@ -1091,6 +1226,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-7",
+    officeId: "office-mro",
     name: {
       en: "Mandal Revenue Office (MRO Tahsildar)",
       te: "మండల రెవెన్యూ కార్యాలయం (MRO తహశీల్దార్)",
@@ -1131,6 +1267,7 @@ export const govtOfficers: GovtOfficer[] = [
   },
   {
     id: "govt-8",
+    officeId: "office-mpdo",
     name: {
       en: "Mandal Parishad Development Office (MPDO)",
       te: "మండల పరిషత్ అభివృద్ధి కార్యాలయం (MPDO)",
@@ -1167,6 +1304,170 @@ export const govtOfficers: GovtOfficer[] = [
       en: "Executes rural development plans, sanctions central and state welfare schemes (like PMAY housing), manages MGNREGS job card allocations, and handles panchayat development funds.",
       te: "గ్రామీణ అభివృద్ధి ప్రణాళికలు, సంక్షేమ గృహ నిర్మాణ పథకాల మంజూరు, ఉపాధి హామీ జాబ్ కార్డుల మంజూరు మరియు పంచాయతీల నిధుల పర్యవేక్షణ.",
       hi: "कल्याणकारी योजनाओं का क्रियान्वयन, सरकारी आवास योजनाओं की स्वीकृति, और मनरेगा (MGNREGS) रोजगार के कार्यों की देखरेख।"
+    }
+  },
+  {
+    id: "govt-9",
+    officeId: "office-sach",
+    name: {
+      en: "Mr. P. Venkatesh",
+      te: "శ్రీ పి. వెంకటేష్",
+      hi: "श्री पी. वेंकटेश"
+    },
+    designation: {
+      en: "Welfare & Education Assistant",
+      te: "సంక్షేమ & విద్యా సహాయకుడు",
+      hi: "कल्याण और शिक्षा सहायक"
+    },
+    department: {
+      en: "Welfare & Social Audit",
+      te: "సంక్షేమ & సామాజిక ఆడిట్",
+      hi: "कल्याण और सामाजिक अंकेक्षण"
+    },
+    phone: "+91 9491012301",
+    email: "wea.sach-orvakal@ap.gov.in",
+    permissions: [
+      { en: "Pension scheme validation", te: "పింఛను పథక లబ్ధిదారుల ధృవీకరణ", hi: "पेंशन योजना सत्यापन" },
+      { en: "Student scholarship registration", te: "విద్యార్థి స్కాలర్‌షిప్ నమోదు", hi: "छात्र छात्रवृत्ति पंजीकरण" },
+      { en: "Housing scheme applications review", te: "గృహ నిర్మాణ దరఖాస్తుల పరిశీలన", hi: "आवास योजना आवेदनों की समीक्षा" }
+    ],
+    location: {
+      en: "Gram Sachivalayam Building, Orvakal",
+      te: "గ్రామ సచివాలయ భవనం, ఓర్వకల్లు",
+      hi: "ग्राम सचिवालय भवन, ओरवाकल"
+    },
+    timings: {
+      en: "10:00 AM - 05:00 PM (Sunday Closed)",
+      te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)",
+      hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)"
+    },
+    servicesDescription: {
+      en: "Verifies and processes state pension schemes, student scholarships (Talliki Vandanam), and oversees welfare schemes implementation.",
+      te: "సామాజిక పింఛన్లు, విద్యా పథకాలు మరియు ఇతర సంక్షేమ కార్యక్రమాల క్షేత్రస్థాయి పరిశీలన మరియు దరఖాస్తుల నిర్వహణ.",
+      hi: "सामाजिक सुरक्षा पेंशन, छात्रवृत्ति (तल्लिकी वंदनम) और अन्य कल्याणकारी योजनाओं के आवेदनों का सत्यापन और प्रसंस्करण।"
+    }
+  },
+  {
+    id: "govt-10",
+    officeId: "office-sach",
+    name: {
+      en: "Mrs. G. Ramadevi",
+      te: "శ్రీమతి జి. రమాదేవి",
+      hi: "श्रीमती जी. रमादेवी"
+    },
+    designation: {
+      en: "Village Surveyor",
+      te: "గ్రామ సర్వేయర్",
+      hi: "ग्राम सर्वेक्षक"
+    },
+    department: {
+      en: "Land Records & Revenue",
+      te: "భూ రికార్డులు & రెవెన్యూ",
+      hi: "भूमि अभिलेख और राजस्व"
+    },
+    phone: "+91 9491012302",
+    email: "survey.sach-orvakal@ap.gov.in",
+    permissions: [
+      { en: "Land boundary survey requests", te: "భూ సరిహద్దుల కొలత అభ్యర్థనలు", hi: "भूमि सीमा सर्वेक्षण अनुरोध" },
+      { en: "Sub-division of agricultural plots", te: "వ్యవసాయ భూముల సబ్-డివిజన్", hi: "कृषि भूखंडों का उप-विभाजन" },
+      { en: "Village map verification", te: "గ్రామ మ్యాప్ ధృవీకరణ", hi: "ग्राम मानचित्र सत्यापन" }
+    ],
+    location: {
+      en: "Gram Sachivalayam Building, Orvakal",
+      te: "గ్రామ సచివాలయ భవనం, ఓర్వకల్లు",
+      hi: "ग्राम सचिवालय भवन, ओरवाकल"
+    },
+    timings: {
+      en: "10:00 AM - 05:00 PM (Sunday Closed)",
+      te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)",
+      hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)"
+    },
+    servicesDescription: {
+      en: "Conducts land surveys, assists in resolving boundary disputes, generates sub-division records, and updates village land maps.",
+      te: "వ్యవసాయ మరియు నివాస స్థలాల కొలతలు, సరిహద్దు వివాదాల పరిష్కారం మరియు భూ రికార్డుల మ్యాపింగ్ సేవలు.",
+      hi: "भूमि सर्वेक्षण, सीमा विवादों के समाधान में सहायता, भूमि उप-विभाजन का रिकॉर्ड और ग्राम मानचित्रों का रख-रखाव।"
+    }
+  },
+  {
+    id: "govt-11",
+    officeId: "office-sach",
+    name: {
+      en: "Mr. K. Ashok",
+      te: "శ్రీ కె. అశోక్",
+      hi: "श्री के. अशोक"
+    },
+    designation: {
+      en: "Panchayat Digital Assistant",
+      te: "పంచాయతీ డిజిటల్ సహాయకుడు",
+      hi: "पंचायत डिजिटल सहायक"
+    },
+    department: {
+      en: "E-Governance & Digital Services",
+      te: "ఈ-గవర్నెన్స్ & డిజిటల్ సేవలు",
+      hi: "ई-गवर्नेंस और डिजिटल सेवाएं"
+    },
+    phone: "+91 9491012303",
+    email: "da.sach-orvakal@ap.gov.in",
+    permissions: [
+      { en: "Certificate printing (Caste/Income)", te: "ధృవీకరణ పత్రాల ముద్రణ", hi: "प्रमाण पत्र मुद्रण" },
+      { en: "Aadhaar e-KYC validation", te: "ఆధార్ బయోమెట్రిక్ e-KYC", hi: "आधार ई-केवाईसी सत्यापन" },
+      { en: "Online scheme applications upload", te: "ఆన్‌లైన్ పథకాల దరఖాస్తుల అప్‌లోడ్", hi: "ऑनलाइन योजनाओं के आवेदन अपलोड" }
+    ],
+    location: {
+      en: "Gram Sachivalayam Building, Orvakal",
+      te: "గ్రామ సచివాలయ భవనం, ఓర్వకల్లు",
+      hi: "ग्राम सचिवालय भवन, ओरवाकल"
+    },
+    timings: {
+      en: "10:00 AM - 05:00 PM (Sunday Closed)",
+      te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)",
+      hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)"
+    },
+    servicesDescription: {
+      en: "Manages digital services at the secretariat, facilitates online portal registrations, processes certificates, and handles Aadhaar-enabled payments.",
+      te: "సచివాలయంలోని డిజిటల్ సేవలు, ప్రభుత్వ పథకాల ఆన్‌లైన్ దరఖాస్తుల నమోదు, ఈ-కేవైసీ మరియు బయోమెట్రిక్ ధృవీకరణలు.",
+      hi: "सचिवालय में डिजिटल सेवाओं का प्रबंधन, ऑनलाइन पंजीकरण, प्रमाण पत्र प्रसंस्करण और आधार सक्षम भुगतान प्रणाली का संचालन।"
+    }
+  },
+  {
+    id: "govt-12",
+    officeId: "office-sach",
+    name: {
+      en: "Mr. B. Suresh",
+      te: "శ్రీ బి. సురేష్",
+      hi: "श्री बी. सुरेश"
+    },
+    designation: {
+      en: "Ward Amenities Secretary",
+      te: "వార్డు సదుపాయాల కార్యదర్శి",
+      hi: "वार्ड सुख-सुविधा सचिव"
+    },
+    department: {
+      en: "Civic Infrastructure",
+      te: "పౌర మౌలిక సదుపాయాలు",
+      hi: "नागरिक बुनियादी ढांचा"
+    },
+    phone: "+91 9491012304",
+    email: "was.sach-orvakal@ap.gov.in",
+    permissions: [
+      { en: "Streetlight repair requests", te: "వీధి దీపాల మరమ్మతుల నమోదు", hi: "स्ट्रीटलाइट मरम्मत अनुरोध" },
+      { en: "Water pipeline leakage repair", te: "తాగునీటి పైప్‌లైన్ లీకేజీ మరమ్మతు", hi: "पानी की पाइपलाइन मरम्मत" },
+      { en: "Sanitation & drainage cleaning", te: "డ్రైనేజీ శుభ్రత పనుల పర్యవేక్షణ", hi: "स्वच्छता और जल निकासी सफाई" }
+    ],
+    location: {
+      en: "Gram Sachivalayam Building, Orvakal",
+      te: "గ్రామ సచివాలయ భవనం, ఓర్వకల్లు",
+      hi: "ग्राम सचिवालय भवन, ओरवाकल"
+    },
+    timings: {
+      en: "10:00 AM - 05:00 PM (Sunday Closed)",
+      te: "ఉదయం 10:00 - సాయంత్రం 5:00 (ఆదివారం సెలవు)",
+      hi: "सुबह 10:00 - शाम 5:00 (रविवार बंद)"
+    },
+    servicesDescription: {
+      en: "Supervises local infrastructure maintenance, resolves drinking water supply issues, coordinates streetlight repairs, and manages sanitation drives in the village.",
+      te: "స్థానిక వీధి దీపాలు, డ్రైనేజీ కాలువల శుభ్రత, మరియు తాగునీటి పైప్‌లైన్ల మరమ్మతుల పనుల పర్యవేక్షణ.",
+      hi: "वार्ड स्तर पर पेयजल आपूर्ति, स्ट्रीट लाइट मरम्मत, और स्वच्छता अभियानों के प्रबंधन के लिए जिम्मेदार।"
     }
   }
 ];
@@ -2415,6 +2716,7 @@ export const rentals: RentalProperty[] = [
 export interface PostalService {
   id: string;
   name: LocalizedText;
+  schemes?: FinancialScheme[];
   postmaster: LocalizedText;
   phone: string;
   pincode: string;
@@ -2426,6 +2728,7 @@ export interface PostalService {
 export interface BankAndAtm {
   id: string;
   name: LocalizedText;
+  schemes?: FinancialScheme[];
   branch: LocalizedText;
   ifsc: string;
   phone: string;
@@ -2490,209 +2793,10 @@ export const banksAndAtms: BankAndAtm[] = [
 ];
 
 export const govtSchemes: GovtScheme[] = [
-  {
-    id: "schm-1",
-    title: {
-      en: "YSR Rythu Bharosa - PM Kisan",
-      te: "వైఎస్సార్ రైతు భరోసా - పీఎం కిసాన్",
-      hi: "वाईएसआर रायथू भरोसा - पीएम किसान"
-    },
-    category: "farmer",
-    description: {
-      en: "Financial assistance scheme for landholder farmer families to support agriculture and investment.",
-      te: "వ్యవసాయ పెట్టుబడి కొరకు భూమి ఉన్న రైతు కుటుంబాలకు ఆర్థిక సహాయం అందించే పథకం.",
-      hi: "कृषि और निवेश सहायता के लिए भूमिधारक किसान परिवारों के लिए वित्तीय सहायता योजना।"
-    },
-    benefits: {
-      en: "Rs. 13,500 per year (Rs. 7,500 by State Govt and Rs. 6,000 by Central Govt PM-Kisan) paid in three instalments.",
-      te: "సంవత్సరానికి రూ. 13,500 (రాష్ట్ర ప్రభుత్వం రూ. 7,500 మరియు కేంద్ర పీఎం-కిసాన్ రూ. 6,000) మూడు విడతలలో చెల్లింపు.",
-      hi: "रु. 13,500 प्रति वर्ष (राज्य सरकार द्वारा रु. 7,500 और केंद्र सरकार द्वारा रु. 6,000) तीन किस्तों में भुगतान।"
-    },
-    eligibility: {
-      en: "All land-owning farmer families in the state. Tenant farmers belonging to SC, ST, BC, and Minorities are also eligible.",
-      te: "రాష్ట్రంలోని భూమి ఉన్న రైతు కుటుంబాలు. ఎస్సీ, ఎస్టీ, బీసీ, మైనారిటీ వర్గాలకు చెందిన కౌలు రైతులు కూడా అర్హులు.",
-      hi: "राज्य के सभी भूमि मालिक किसान परिवार। एससी, एसटी, ओबीसी और अल्पसंख्यक वर्ग के बटाईदार किसान भी पात्र हैं।"
-    },
-    applyProcess: {
-      en: "Apply through Rythu Bharosa Kendram (RBK) with Aadhaar, Pattadar Passbook, bank account, and tenant agreement (if applicable).",
-      te: "ఆధార్, పట్టాదారు పాస్ బుక్, బ్యాంక్ ఖాతా వివరాలతో స్థానిక రైతు భరోసా కేంద్రం (RBK) లో దరఖాస్తు చేసుకోండి.",
-      hi: "आधार, पट्टादार पासबुक, बैंक खाता और किरायेदारी समझौते (यदि लागू हो) के साथ रायथू भरोसा केंद्र (आरबीके) के माध्यम से आवेदन करें।"
-    }
-  },
-  {
-    id: "schm-2",
-    title: {
-      en: "Jagananna Vidya Deevena (Fee Reimbursement)",
-      te: "జగనన్న వియదా దీవెన (ఫీజు రీయింబర్స్ మెంట్)",
-      hi: "जगन्नाथ विद्या दीवेना (शुल्क प्रतिपूर्ति)"
-    },
-    category: "students",
-    description: {
-      en: "Provides complete fee reimbursement for higher education students to ensure high-quality college education.",
-      te: "ఉన్నత చదువులు చదివే పేద విద్యార్థులకు పూర్తి కాలేజ్ ఫీజు రీయింబర్స్ మెంట్ అందించే పథకం.",
-      hi: "उच्च गुणवत्ता वाली कॉलेज शिक्षा सुनिश्चित करने के लिए उच्च शिक्षा के छात्रों को पूर्ण शुल्क प्रतिपूर्ति प्रदान करता है।"
-    },
-    benefits: {
-      en: "Full tuition fee reimbursement credited directly to the college account or mother's bank account quarterly.",
-      te: "పూర్తి ట్యూషన్ ఫీజు రీయింబర్స్ మెంట్ త్రైమాసిక ప్రాతిపదికన తల్లి బ్యాంక్ ఖాతాలో జమ చేయబడుతుంది.",
-      hi: "त्रैमासिक आधार पर सीधे कॉलेज या माता के बैंक खाते में पूरी ट्यूशन फीस प्रतिपूर्ति।"
-    },
-    eligibility: {
-      en: "Students pursuing ITI, Polytechnic, Degree, Engineering, and Medicine whose family income is below Rs. 2.5 Lakhs/year.",
-      te: "ఐటిఐ, పాలిటెక్నిక్, డిగ్రీ, ఇంజనీరింగ్, మెడిసిన్ చదివే విద్యార్థులు (కుటుంబ వార్షిక ఆదాయం రూ. 2.5 లక్షల లోపు ఉండాలి).",
-      hi: "आईटीआई, पॉलिटेक्निक, डिग्री, इंजीनियरिंग और मेडिसिन करने वाले छात्र जिनकी पारिवारिक आय रु. 2.5 लाख/वर्ष से कम है।"
-    },
-    applyProcess: {
-      en: "Register online via Jnanabhumi Portal and submit hard copies to college clerk. Verification done by Secretariat staff.",
-      te: "జ్ఞానభూమి పోర్టల్ ద్వారా ఆన్ లైన్ లో నమోదు చేసుకోండి మరియు కాలేజ్ లో పత్రాలు సమర్పించండి. సచివాలయ సిబ్బంది ధృవీకరిస్తారు.",
-      hi: "ज्ञानभूमि पोर्टल के माध्यम से ऑनलाइन पंजीकरण करें और कॉलेज क्लर्क को प्रतियां जमा करें। सचिवालय कर्मचारियों द्वारा सत्यापन।"
-    }
-  },
-  {
-    id: "schm-3",
-    title: {
-      en: "YSR Cheyutha (Women Empowerment)",
-      te: "వైఎస్సార్ చేయూత (మహిళా సాధికారత)",
-      hi: "वाईएसआर चेयूथा (महिला सशक्तिकरण)"
-    },
-    category: "women",
-    description: {
-      en: "Empowers women of weaker sections by providing financial aid for setting up small business shops and livestock units.",
-      te: "చిన్న వ్యాపారాలు మరియు జీవనోపాధి కొరకు ఆర్థిక సహాయం అందిస్తూ బలహీన వర్గాల మహిళలను ప్రోత్సహించే పథకం.",
-      hi: "छोटे व्यवसाय और पशुपालन इकाइयां स्थापित करने के लिए वित्तीय सहायता प्रदान करके कमजोर वर्गों की महिलाओं को सशक्त बनाना।"
-    },
-    benefits: {
-      en: "Rs. 75,000 over four years (Rs. 18,750 per year) and business setup support in collaboration with Amul, Reliance, ITC.",
-      te: "నాలుగు సంవత్సరాలలో రూ. 75,000 (సంవత్సరానికి రూ. 18,750) మరియు అమూల్, రిలయన్స్, ఐటీసీ భాగస్వామ్యంతో వ్యాపార సహాయం.",
-      hi: "चार वर्षों में रु. 75,000 (रु. 18,750 प्रति वर्ष) और अमूल, रिलायंस, आईटीसी के सहयोग से व्यापार स्थापना सहायता।"
-    },
-    eligibility: {
-      en: "SC, ST, BC, and Minority women aged between 45 to 60 years.",
-      te: "45 నుండి 60 సంవత్సరాల వయస్సు గల ఎస్సీ, ఎస్టీ, బీసీ, మరియు మైనారటీ మహిళలు.",
-      hi: "45 से 60 वर्ष की आयु के बीच की एससी, एसटी, ओबीसी और अल्पसंख्यक वर्ग की महिलाएं।"
-    },
-    applyProcess: {
-      en: "Apply at the local Ward / Gram Secretariat. Village Volunteer compiles data and checks eligibility.",
-      te: "స్థానిక గ్రామ/వార్డు సచివాలయంలో దరఖాస్తు చేసుకోండి. గ్రామ వాలంటీర్ ద్వారా లబ్ధిదారుల ఎంపిక జరుగుతుంది.",
-      hi: "स्थानीय वार्ड/ग्राम सचिवालय में आवेदन करें। ग्राम स्वयंसेवक डेटा संकलित करता है और पात्रता की जांच करता है।"
-    }
-  },
-  {
-    id: "schm-4",
-    title: {
-      en: "YSR Jagananna Thodu (Street Vendors & Small Business)",
-      te: "వైఎస్సార్ జగనన్న తోడు (చిన్న వ్యాపారులకు)",
-      hi: "वाईएसआर जगन्नाथ थोडू (सड़क विक्रेता)"
-    },
-    category: "business",
-    description: {
-      en: "Interest-free working capital loan scheme to free small street vendors and small business owners from high-interest private moneylenders.",
-      te: "వడ్డీ వ్యాపారుల బారి నుండి చిరు వ్యాపారులను రక్షించేందుకు వడ్డీ లేని పెట్టుబడి రుణం అందించే పథకం.",
-      hi: "छोटे सड़क विक्रेताओं को निजी साहूकारों के चंगुल से मुक्त कराने के लिए ब्याज मुक्त कार्यशील पूंजी ऋण योजना।"
-    },
-    benefits: {
-      en: "Interest-free working capital loan of Rs. 10,000. Successful repayment qualifies for higher loan limits.",
-      te: "వడ్డీ లేని రూ. 10,000 పెట్టుబడి రుణం. సకాలంలో చెల్లించిన వారికి మరింత పెద్ద రుణం లభిస్తుంది.",
-      hi: "ब्याज मुक्त रु. 10,000 का ऋण। सफल पुनर्भुगतान उच्च ऋण सीमा के लिए योग्य बनाता है।"
-    },
-    eligibility: {
-      en: "Street vendors, cart merchants, small shop owners, and traditional artisans aged 18+ with valid vending identity.",
-      te: "రోడ్డు పక్కన వ్యాపారం చేసుకునే వారు, తోపుడు బండ్ల వ్యాపారులు మరియు చేతివృత్తుల వారు (వయస్సు 18 ఏళ్లు పైబడి ఉండాలి).",
-      hi: "सड़क विक्रेता, ठेले वाले और पारंपरिक कारीगर (आयु 18+ वर्ष) जिनके पास वैध पहचान पत्र हो।"
-    },
-    applyProcess: {
-      en: "Submit request to Village Secretariat. Sourced and processed in collaboration with local cooperative/rural banks.",
-      te: "గ్రామ సచివాలయంలో దరఖాస్తు పత్రం సమర్పించండి. స్థానిక బ్యాంకు ద్వారా రుణం మంజూరు చేయబడుతుంది.",
-      hi: "ग्राम सचिवालय में अनुरोध जमा करें। स्थानीय सहकारी/ग्रामीण बैंकों के सहयोग से ऋण की प्रक्रिया की जाती है।"
-    }
-  },
-  {
-    id: "schm-5",
-    title: {
-      en: "YSR Bima (Accidental Insurance)",
-      te: "వైఎస్సార్ బీమా (ప్రమాద బీమా పథకం)",
-      hi: "वाईएसआर बीमा (दुर्घटना बीमा)"
-    },
-    category: "insurance",
-    description: {
-      en: "Accidental death and disability insurance scheme providing immediate relief to BPL families in case of primary earner loss.",
-      te: "కుటుంబ పెద్ద ప్రమాదవశాత్తు మరణిస్తే ఆ కుటుంబానికి తక్షణ ఆర్థిక భరోసా అందించే ఉచిత బీమా పథకం.",
-      hi: "परिवार के मुखिया की दुर्घटना में मृत्यु या विकलांगता की स्थिति में बीपीएल परिवारों को तत्काल राहत देने वाली बीमा योजना।"
-    },
-    benefits: {
-      en: "Rs. 5 Lakhs cover for accidental death or permanent total disability, and Rs. 10,000 immediate funeral aid.",
-      te: "ప్రమాదవశాత్తు మరణిస్తే రూ. 5 లక్షల బీమా పరిహారం, మరియు దహన సంస్కారాల కొరకు రూ. 10,000 తక్షణ సహాయం.",
-      hi: "दुर्घटना में मृत्यु या स्थायी विकलांगता के लिए रु. 5 लाख का कवर, और रु. 10,000 तत्काल अंतिम संस्कार सहायता।"
-    },
-    eligibility: {
-      en: "Primary bread earner of the family, aged between 18 to 70 years, belonging to a BPL household.",
-      te: "కుటుంబంలో సంపాదించే వ్యక్తి అయి ఉండాలి (వయస్సు 18 నుండి 70 ఏళ్ల లోపు, తెల్ల రేషన్ కార్డు ఉండాలి).",
-      hi: "परिवार का प्राथमिक कमाने वाला सदस्य, आयु 18 से 70 वर्ष के बीच, बीपीएल परिवार से होना चाहिए।"
-    },
-    applyProcess: {
-      en: "Automatic enrollment for eligible Rice Card holders via Village Volunteers. Nominee details mapped digitally.",
-      te: "ఆటోమేటిక్ గా రేషన్ కార్డు ఆధారంగా వాలంటీర్ ద్వారా లబ్ధిదారుల నమోదు జరుగుతుంది. సచివాలయం పూర్తి బాధ్యత తీసుకుంటుంది.",
-      hi: "ग्राम स्वयंसेवकों के माध्यम से पात्र राइस कार्ड धारकों के लिए स्वचालित नामांकन। नामांकित व्यक्ति का विवरण मैप किया जाता है।"
-    }
-  },
-  {
-    id: "schm-6",
-    title: {
-      en: "Sukanya Samriddhi Yojana (Savings for Girl Child)",
-      te: "సుకన్య సమృద్ధి యోజన (బాలికల పొదుపు పథకం)",
-      hi: "सुकन्या समृद्धि योजना (बालिका बचत योजना)"
-    },
-    category: "investment",
-    description: {
-      en: "A Government of India backed savings scheme targeted at parents of girl children to build a fund for future education/marriage.",
-      te: "ఆడపిల్లల భవిష్యత్తు చదువు మరియు వివాహ ఖర్చుల కొరకు కేంద్ర ప్రభుత్వం ప్రవేశపెట్టిన అత్యధిక వడ్డీ గల పొదుపు పథకం.",
-      hi: "भविष्य की शिक्षा/शादी के लिए कोष बनाने के लिए बालिकाओं के माता-पिता के लिए भारत सरकार की बचत योजना।"
-    },
-    benefits: {
-      en: "High compound interest rate (8.2%+), tax exemptions under Sec 80C, and guaranteed returns upon maturity.",
-      te: "అత్యధిక చక్రవడ్డీ రేటు (8.2%+), ఆదాయ పన్ను మినహాయింపు (Section 80C) మరియు సురక్షితమైన రాబడి.",
-      hi: "उच्च चक्रवृद्धि ब्याज दर (8.2%+), धारा 80C के तहत आयकर छूट, और परिपक्वता पर गारंटीकृत रिटर्न।"
-    },
-    eligibility: {
-      en: "Can be opened by a parent/guardian for a girl child from her birth up to the age of 10 years. Max 2 accounts per family.",
-      te: "ఆడపిల్ల పుట్టినప్పటి నుండి 10 సంవత్సరాల వయస్సు వచ్చేలోపు తల్లిదండ్రులు ఈ ఖాతా తెరవవచ్చు. ఒక కుటుంబానికి గరిష్టంగా ఇద్దరు పిల్లలకే పరిమితం.",
-      hi: "माता-पिता/अभिभावक द्वारा 10 वर्ष तक की आयु की बालिका के लिए खोला जा सकता है। प्रति परिवार अधिकतम 2 खाते।"
-    },
-    applyProcess: {
-      en: "Visit Orvakal Post Office or nearest SBI/Canara bank branch. Submit girl child birth certificate and parent's KYC documents.",
-      te: "ఓర్వకల్లు సబ్ పోస్ట్ ఆఫీస్ లేదా ఎస్బీఐ/కెనరా బ్యాంకులలో సంప్రదించండి. బాలిక జనన ధృవీకరణ పత్రం, తల్లిదండ్రుల ఆధార్ సమర్పించాలి.",
-      hi: "ओरवाकल डाकघर या निकटतम एसबीआई/केनरा बैंक शाखा पर जाएं। बालिका का जन्म प्रमाण पत्र और माता-पिता के केवाईसी दस्तावेज जमा करें।"
-    }
-  },
-  {
-    id: "schm-7",
-    title: {
-      en: "YSR Pension Kanuka (Social Welfare)",
-      te: "వైఎస్సార్ పెన్షన్ కానుక",
-      hi: "वाईएसआर पेंशन कानुका"
-    },
-    category: "welfare",
-    description: {
-      en: "Welfare scheme providing monthly social security pensions to old aged, widows, weavers, and disabled citizens.",
-      te: "వృద్ధులు, వితంతువులు, గీత కార్మికులు, మరియు వికలాంగులకు నెలవారీ సామాజిక భద్రతా పెన్షన్ అందించే పథకం.",
-      hi: "वृद्धों, विधवाओं, बुनकरों और विकलांग नागरिकों को मासिक सामाजिक सुरक्षा पेंशन प्रदान करने की कल्याणकारी योजना।"
-    },
-    benefits: {
-      en: "Monthly pension of Rs. 3,000 delivered directly to the doorstep on the 1st of every month by Secretariat staff.",
-      te: "నెలవారీ రూ. 3,000 పెన్షన్ ప్రతి నెలా 1వ తేదీనే సచివాలయ సిబ్బంది నేరుగా ఇంటికే వచ్చి అందజేస్తారు.",
-      hi: "मासिक रु. 3,000 की पेंशन हर महीने की 1 तारीख को सीधे घर पर सचिवालय कर्मचारियों द्वारा पहुंचाई जाती है।"
-    },
-    eligibility: {
-      en: "Orvakal residents aged 60+ (Old Age), Widows, weavers, single women, disabled (40%+ disability certificate required) with low family income.",
-      te: "ఓర్వకల్లు గ్రామ నివాసియై ఉండాలి. వృద్ధులు (60 ఏళ్లు పైబడిన వారు), వితంతువులు, ఒంటరి మహిళలు, వికలాంగులు (40% కంటే ఎక్కువ వైకల్యం ఉండాలి).",
-      hi: "ओरवाकल के 60+ वर्ष के वृद्ध, विधवाएं, एकल महिलाएं, और 40%+ विकलांगता वाले नागरिक जिनकी पारिवारिक आय कम है।"
-    },
-    applyProcess: {
-      en: "Apply through local Gram Secretariat with age proof, photo, Aadhaar, SADAREM certificate (for disabled), and ration card.",
-      te: "వయస్సు ధృవీకరణ, ఆధార్, రేషన్ కార్డు, మరియు వికలాంగులైతే సదరం (SADAREM) పత్రంతో సచివాలయంలో దరఖాస్తు చేసుకోవాలి.",
-      hi: "आयु प्रमाण, फोटो, आधार, राशन कार्ड और विकलांगता प्रमाण पत्र के साथ स्थानीय ग्राम सचिवालय के माध्यम से आवेदन करें।"
-    }
-  }
+  ...stateSchemes,
+  ...centralSchemes,
+  ...bankSchemes,
+  ...postalSchemes
 ];
 
 export const newsItems: NewsItem[] = [
@@ -2754,6 +2858,242 @@ export const newsItems: NewsItem[] = [
       en: "APIIC has cleared the land allocation of 50 acres to Reliance Group for setting up a fruit processing and juice concentrate unit at Kurnool Mega Food Park, Orvakal.",
       te: "ఓర్వకల్లు మెగా ఫుడ్ పార్క్ లో పండ్ల ప్రాసెసింగ్ మరియు జ్యూస్ కాన్సంట్రేట్ యూనిట్ ఏర్పాటుకు రిలయన్స్ గ్రూప్ కు 50 ఎకరాల భూమి కేటాయింపును APIIC ఆమోదించింది.",
       hi: "एपीआईआईसी ने ओरवाकल के मेगा फूड पार्क में रिलायंस ग्रुप को फ्रूट प्रोसेसिंग और जूस यूनिट स्थापित करने के लिए 50 एकड़ भूमि के आवंटन को मंजूरी दे दी है।"
+    }
+  }
+];
+
+// ================== EXTRA ADDED DATA (COMMITTEES, crops, FERTILIZERS) ==================
+
+export interface Committee {
+  id: string;
+  name: LocalizedText;
+  president: LocalizedText;
+  membersCount: number;
+  phone: string;
+  purpose: LocalizedText;
+  meetings: LocalizedText;
+}
+
+export const committees: Committee[] = [
+  {
+    id: "com-1",
+    name: { en: "Temple Committee", te: "ఆలయ కమిటీ", hi: "मंदिर समिति" },
+    president: { en: "T. Narayana Reddy", te: "టి. నారాయణ రెడ్డి", hi: "टी. नारायण रेड्डी" },
+    membersCount: 15,
+    phone: "+91 9440129911",
+    purpose: { en: "Manages village temple funds, festivals, and infrastructure maintenance.", te: "గ్రామ దేవాలయాల నిధులు, ఉత్సవాలు మరియు మౌలిక సదుపాయాల పర్యవేక్షణ.", hi: "ग्राम मंदिर निधि, उत्सवों और बुनियादी ढांचे के रख-रखाव का प्रबंधन।" },
+    meetings: { en: "First Sunday of every month", te: "ప్రతి నెల మొదటి ఆదివారం", hi: "हर महीने का पहला रविवार" }
+  },
+  {
+    id: "com-2",
+    name: { en: "Kaavali Committee (Village Guard)", te: "కావలి కమిటీ", hi: "कावली समिति (ग्राम रक्षक)" },
+    president: { en: "K. Pedda Pullanna", te: "కె. పెద్ద పుల్లన్న", hi: "के. पेड्डा पुल्लन्ना" },
+    membersCount: 20,
+    phone: "+91 9959341235",
+    purpose: { en: "Coordinates neighborhood watches, night patrols, and security measures with Police.", te: "రాత్రి సమయాలలో కావలి తిరుగుట, గ్రామ భద్రతా చర్యల పర్యవేక్షణ.", hi: "रात की गश्त और पुलिस के साथ सुरक्षा उपायों का समन्वय।" },
+    meetings: { en: "Bi-weekly on Saturdays", te: "ప్రతి రెండు వారాలకొకసారి శనివారం", hi: "हर दो सप्ताह में शनिवार को" }
+  },
+  {
+    id: "com-3",
+    name: { en: "Watershed Committee", te: "వాటర్‌షెడ్ కమిటీ", hi: "वाटरशेड समिति" },
+    president: { en: "M. Chinna Obulanna", te: "ఎం. చిన్న ఓబులన్న", hi: "एम. चिन्ना ओबुलन्ना" },
+    membersCount: 12,
+    phone: "+91 9652314561",
+    purpose: { en: "Oversees local lake desiltation, watershed conservation, and farm pond works.", te: "చెరువుల పూడికతీత, జల సంరక్షణ మరియు వ్యవసాయ కుంటల పనుల పర్యవేక్షణ.", hi: "स्थानीय तालाबों की गाद निकालना, जल संरक्षण और कृषि तालाबों के कार्यों की देखरेख।" },
+    meetings: { en: "Monthly on 10th", te: "ప్రతి నెల 10వ తేదీన", hi: "हर महीने की 10 तारीख को" }
+  },
+  {
+    id: "com-4",
+    name: { en: "Church Committee", te: "చర్చి కమిటీ", hi: "चर्च समिति" },
+    president: { en: "Y. Joseph", te: "వై. జోసెఫ్", hi: "वाई. जोसेफ" },
+    membersCount: 10,
+    phone: "+91 9010452391",
+    purpose: { en: "Manages local church prayers, charity funds, and festival events.", te: "చర్చి ప్రార్థనలు, సేవా కార్యక్రమాలు మరియు పండుగ ఏర్పాట్లు.", hi: "स्थानीय चर्च की प्रार्थनाओं, धर्मार्थ निधियों और त्योहारों का प्रबंधन।" },
+    meetings: { en: "Every Sunday after service", te: "ప్రతి ఆదివారం ప్రార్థన అనంతరం", hi: "हर रविवार सेवा के बाद" }
+  },
+  {
+    id: "com-5",
+    name: { en: "Mosque Committee", te: "మసీదు కమిటీ", hi: "मस्जिद समिति" },
+    president: { en: "Md. Abdul Latheef", te: "మహమ్మద్ అబ్దుల్ లతీఫ్", hi: "मोहम्मद अब्दुल लतीफ" },
+    membersCount: 12,
+    phone: "+91 9494301242",
+    purpose: { en: "Coordinates daily prayers, Ramzan charity allocations, and madrasa maintenance.", te: "రోజువారీ ప్రార్థనలు, రంజాన్ తోఫా పంపిణీ మరియు మసీదు పర్యవేక్షణ.", hi: "दैनिक नमाज़, रमज़ान दान और मदरसे के रख-रखाव का समन्वय।" },
+    meetings: { en: "Monthly on 5th", te: "ప్రతి నెల 5వ తేదీన", hi: "हर महीने की 5 तारीख को" }
+  },
+  {
+    id: "com-6",
+    name: { en: "Cricket & Sports Club", te: "క్రికెట్ & స్పోర్ట్స్ క్లబ్", hi: "क्रिकेट और स्पोर्ट्स क्लब" },
+    president: { en: "P. Vinay Kumar", te: "పి. వినయ్ కుమార్", hi: "पी. विनय कुमार" },
+    membersCount: 35,
+    phone: "+91 7702951234",
+    purpose: { en: "Organizes local youth tournaments and maintains the village cricket ground.", te: "యువతకు క్రికెట్ టోర్నమెంట్ల నిర్వహణ మరియు క్రీడా మైదాన పర్యవేక్షణ.", hi: "स्थानीय युवाओं के लिए खेल प्रतियोगिताओं का आयोजन और खेल मैदान का रखरखाव।" },
+    meetings: { en: "Every Sunday evening", te: "ప్రతి ఆదివారం సాయంత్రం", hi: "हर रविवार शाम" }
+  },
+  {
+    id: "com-7",
+    name: { en: "Students Club", te: "స్టూడెంట్స్ క్లబ్", hi: "स्टूडेंट्स क्लब" },
+    president: { en: "K. Haritha", te: "కె. హరిత", hi: "के. हरिता" },
+    membersCount: 25,
+    phone: "+91 8897012351",
+    purpose: { en: "Facilitates study circles, group discussions, and distributes study materials.", te: "గ్రూప్ స్టడీ సర్కిల్స్ నిర్వహణ, పుస్తకాల పంపిణీ మరియు కెరీర్ గైడెన్స్.", hi: "अध्ययन समूहों का संचालन, पुस्तकों का वितरण और करियर मार्गदर्शन।" },
+    meetings: { en: "Bi-weekly on Sundays", te: "ప్రతి రెండు వారాలకొకసారి ఆదివారం", hi: "हर दो सप्ताह में रविवार को" }
+  },
+  {
+    id: "com-8",
+    name: { en: "Education and workshop club", te: "ఎడ్యుకేషన్ & వర్క్‌షాప్ క్లబ్", hi: "शिक्षा और कार्यशाला क्लब" },
+    president: { en: "Prof. S. Ramakrishna", te: "ప్రొఫెసర్ ఎస్. రామకృష్ణ", hi: "प्रो. एस. रामकृष्ण" },
+    membersCount: 15,
+    phone: "+91 9441223344",
+    purpose: { en: "Conducts technology workshops, farm machinery training, and career seminars.", te: "నూతన సాంకేతిక వర్క్‌షాప్‌లు మరియు వ్యవసాయ శిక్షణా తరగతుల నిర్వహణ.", hi: "कृषि और तकनीकी कार्यशालाओं और करियर सेमिनारों का आयोजन।" },
+    meetings: { en: "Last Saturday of every month", te: "ప్రతి నెల చివరి శనివారం", hi: "हर महीने का आखिरी शनिवार" }
+  },
+  {
+    id: "com-9",
+    name: { en: "Business club", te: "బిజినెస్ క్లబ్", hi: "बिजनेस क्लब" },
+    president: { en: "G. Venkateswarlu", te: "జి. వెంకటేశ్వర్లు", hi: "जी. वेंकटेश्वरलू" },
+    membersCount: 18,
+    phone: "+91 9963012999",
+    purpose: { en: "Promotes local entrepreneurship, cottage industries, and bank credit access.", te: "స్థానిక చిరు వ్యాపారాలు మరియు కుటీర పరిశ్రమల అభివృద్ధికి తోడ్పాటు.", hi: "स्थानीय व्यवसायों, कुटीर उद्योगों और बैंकों से ऋण प्राप्त करने में सहायता।" },
+    meetings: { en: "First Monday of every month", te: "ప్రతి నెల మొదటి సోమవారం", hi: "हर महीने का पहला सोमवार" }
+  }
+];
+
+export interface CommercialCrop {
+  id: string;
+  name: LocalizedText;
+  soilType: LocalizedText;
+  waterRequirement: LocalizedText;
+  duration: LocalizedText;
+  yield: LocalizedText;
+  demand: LocalizedText;
+  marketPrice: LocalizedText;
+}
+
+export const commercialCrops: CommercialCrop[] = [
+  {
+    id: "crp-1",
+    name: { en: "Cotton (Kapas)", te: "పత్తి", hi: "कपास" },
+    soilType: { en: "Black cotton soil / deep loamy soil", te: "నల్ల రేగడి నేలలు / సారవంతమైన లోమ్ నేలలు", hi: "काली मिट्टी / दोमट मिट्टी" },
+    waterRequirement: { en: "Medium (500-700 mm), dry weather during harvesting", te: "మధ్యస్థం (పంట కోత సమయంలో పొడి వాతావరణం ఉండాలి)", hi: "मध्यम, कटाई के समय शुष्क मौसम" },
+    duration: { en: "150 - 180 Days", te: "150 - 180 రోజులు", hi: "150 - 180 दिन" },
+    yield: { en: "8 - 12 Quintals / Acre", te: "ఎకరాకు 8 - 12 క్వింటాళ్లు", hi: "8 - 12 क्विंटल / एकड़" },
+    demand: { en: "Very High (local ginning mills & export centers)", te: "చాలా ఎక్కువ (స్థానిక మిల్లులు & ఎగుమతులు)", hi: "बहुत अधिक (स्थानीय मिलें और निर्यात)" },
+    marketPrice: { en: "Rs. 6,800 - Rs. 7,500 / Quintal", te: "రూ. 6,800 - రూ. 7,500 / క్వింటాల్‌కి", hi: "रु. 6,800 - रु. 7,500 / क्विंटल" }
+  },
+  {
+    id: "crp-2",
+    name: { en: "Chillies (Teja & Guntur varieties)", te: "మిరప", hi: "मिर्च" },
+    soilType: { en: "Red loamy and black soils with good drainage", te: "నీరు నిలవని ఎర్ర లోమ్ మరియు నల్ల నేలలు", hi: "अच्छी जल निकासी वाली लाल दोमट और काली मिट्टी" },
+    waterRequirement: { en: "High (Irrigated crop, regular moisture needed)", te: "ఎక్కువ (నిరంతరం తేమ అందించాలి)", hi: "अधिक (नियमित सिंचाई आवश्यक)" },
+    duration: { en: "180 - 210 Days", te: "180 - 210 రోజులు", hi: "180 - 210 दिन" },
+    yield: { en: "15 - 20 Quintals (Dry) / Acre", te: "ఎకరాకు 15 - 20 క్వింటాళ్లు (ఎండినవి)", hi: "15 - 20 क्विंटल (सूखी) / एकड़" },
+    demand: { en: "Extremely High (Guntur Mirchi Yard trading hub)", te: "అత్యధికం (గుంటూరు మార్కెట్ యార్డ్ ద్వారా వ్యాపారం)", hi: "अत्यधिक उच्च (गुंटूर मिर्ची यार्ड निर्यात)" },
+    marketPrice: { en: "Rs. 18,000 - Rs. 24,000 / Quintal", te: "రూ. 18,000 - రూ. 24,000 / క్వింటాల్‌కి", hi: "रु. 18,000 - रु. 24,000 / क्विंटल" }
+  },
+  {
+    id: "crp-3",
+    name: { en: "Groundnut (K-6 / Bold varieties)", te: "వేరుశనగ", hi: "मूंगफली" },
+    soilType: { en: "Sandy loam / light red soils", te: "ఇసుక లోమ్ / తేలికపాటి ఎర్ర నేలలు", hi: "बलुई दोमट / हल्की लाल मिट्टी" },
+    waterRequirement: { en: "Low-Medium (critical pegging stage moisture)", te: "తక్కువ-మధ్యస్థం (ఊడలు దిగే దశలో నీరు అవసరం)", hi: "कम-मध्यम (पेगिंग चरण में नमी आवश्यक)" },
+    duration: { en: "105 - 115 Days", te: "105 - 115 రోజులు", hi: "105 - 115 दिन" },
+    yield: { en: "10 - 15 Quintals / Acre", te: "ఎకరాకు 10 - 15 క్వింటాళ్లు", hi: "10 - 15 क्विंटल / एकड़" },
+    demand: { en: "High (oil extraction units in Kurnool region)", te: "ఎక్కువ (కర్నూలు ఆయిల్ మిల్లుల కొనుగోలు)", hi: "उच्च (कर्नूल क्षेत्र में तेल मिलें)" },
+    marketPrice: { en: "Rs. 6,200 - Rs. 6,800 / Quintal", te: "రూ. 6,200 - రూ. 6,800 / క్వింటాల్‌కి", hi: "रु. 6,200 - रु. 6,800 / क्विंटल" }
+  },
+  {
+    id: "crp-4",
+    name: { en: "Pomegranate (Anar)", te: "దానిమ్మ", hi: "अनार" },
+    soilType: { en: "Deep gravelly loamy soil, tolerates salinity", te: "లోతైన గ్రావెల్ లోమ్ నేలలు, ఉప్పు నేలలను తట్టుకుంటుంది", hi: "बजरीली दोमट मिट्टी, लवणता सहिष्णु" },
+    waterRequirement: { en: "Low (Horticulture drip-irrigated)", te: "తక్కువ (బిందు సేద్యం ద్వారా సాగు)", hi: "कम (ड्रिप सिंचाई उपयुक्त)" },
+    duration: { en: "Perennial (Harvest starts from 2nd Year)", te: "బహువార్షిక (2వ సంవత్సరం నుండి కోత ప్రారంభం)", hi: "बारहमासी (दूसरे वर्ष से कटाई शुरू)" },
+    yield: { en: "4 - 5 Tons / Acre", te: "ఎకరాకు 4 - 5 టన్నులు", hi: "4 - 5 टन / एकड़" },
+    demand: { en: "High (fruit markets in Bangalore/Hyderabad)", te: "ఎక్కువ (బెంగళూరు/హైదరాబాద్ పండ్ల మార్కెట్లు)", hi: "उच्च (बेंगलुरु / हैदराबाद फल बाजार)" },
+    marketPrice: { en: "Rs. 80,000 - Rs. 1,20,000 / Ton", te: "రూ. 80,000 - రూ. 1,20,000 / టన్నుకు", hi: "रु. 80,000 - रु. 1,20,000 / टन" }
+  },
+  {
+    id: "crp-5",
+    name: { en: "Turmeric (Haldi)", te: "పసుపు", hi: "हल्दी" },
+    soilType: { en: "Sandy loam or clayey loam with organic matter", te: "సేంద్రీయ పదార్థాలున్న ఇసుక లోమ్ లేదా నల్ల రేగడి నేలలు", hi: "जैविक पदार्थों से युक्त बलुई दोमट या दोमट मिट्टी" },
+    waterRequirement: { en: "High, regular watering except before harvest", te: "ఎక్కువ (కోతకు ముందు తప్ప మిగతా దశల్లో నిరంతర నీరు అవసరం)", hi: "अधिक, खुदाई से पहले को छोड़कर नियमित सिंचाई आवश्यक" },
+    duration: { en: "210 - 270 Days", te: "210 - 270 రోజులు", hi: "210 - 270 दिन" },
+    yield: { en: "8 - 10 Tons / Acre", te: "ఎకరాకు 8 - 10 టన్నులు", hi: "8 - 10 टन / एकड़" },
+    demand: { en: "High (spices markets & pharmaceutical companies)", te: "ఎక్కువ (మసాలా మార్కెట్లు & ఫార్మా కంపెనీల కొనుగోలు)", hi: "उच्च (मसाला बाजार और फार्मास्युटिकल कंपनियां)" },
+    marketPrice: { en: "Rs. 12,000 - Rs. 15,000 / Quintal", te: "రూ. 12,000 - రూ. 15,000 / క్వింటాల్‌కి", hi: "रु. 12,000 - रु. 15,000 / क्विंटल" }
+  },
+  {
+    id: "crp-6",
+    name: { en: "Aloe Vera", te: "కలబంద", hi: "एलोवेरा" },
+    soilType: { en: "Well-drained sandy or gravelly loam, dry climates", te: "నీరు నిలవని ఇసుక మరియు ఇసుక లోమ్ నేలలు", hi: "अच्छी जल निकासी वाली रेतीली या बजरीली दोमट मिट्टी" },
+    waterRequirement: { en: "Very Low (drought tolerant, avoid water logging)", te: "చాలా తక్కువ (తేమ నిల్వ ఉండకూడదు, తక్కువ నీరు అవసరం)", hi: "बहुत कम (सूखा सहिष्णु, जलभराव से बचें)" },
+    duration: { en: "240 - 300 Days (continuous harvesting)", te: "240 - 300 రోజులు (నిరంతర కోతలు సాధ్యం)", hi: "240 - 300 दिन (लगातार कटाई संभव)" },
+    yield: { en: "15 - 20 Tons / Acre", te: "ఎకరాకు 15 - 20 టన్నులు", hi: "15 - 20 टन / एकड़" },
+    demand: { en: "High (cosmetic, herbal and wellness products)", te: "ఎక్కువ (సౌందర్య సాధనాలు & ఆయుర్వేద ఉత్పత్తులు)", hi: "उच्च (सौंदर्य प्रसाधन, हर्बल और कल्याण उत्पाद)" },
+    marketPrice: { en: "Rs. 5,000 - Rs. 8,000 / Ton", te: "రూ. 5,000 - రూ. 8,000 / టన్నుకు", hi: "रु. 5,000 - रु. 8,000 / टन" }
+  }
+];
+
+export interface FertilizerRecommendation {
+  id: string;
+  crop: LocalizedText;
+  fertilizer: LocalizedText;
+  dosage: LocalizedText;
+  stage: LocalizedText;
+}
+
+export const fertilizerRecommendations: FertilizerRecommendation[] = [
+  {
+    id: "fer-1",
+    crop: { en: "Paddy (Rice)", te: "వరి (వరి నాట్లు)", hi: "धान (चावल)" },
+    fertilizer: { en: "NPK (Nitrogen, Phosphorus, Potassium) + Urea", te: "ఎన్‌పీకే (నత్రజని, భాస్వరం, పొటాషియం) + యూరియా", hi: "एनपीके (नाइट्रोजन, फास्फोरस, पोटेशियम) + यूरिया" },
+    dosage: { en: "Urea: 110 kg, N: 50 kg, P: 24 kg, K: 20 kg per Acre", te: "యూరియా: 110 కిలోలు, N: 50 కిలోలు, P: 24 కిలోలు, K: 20 కిలోలు ఎకరాకు", hi: "यूरिया: 110 किलोग्राम, एन: 50 किलोग्राम, पी: 24 किलोग्राम, के: 20 किलोग्राम प्रति एकड़" },
+    stage: {
+      en: "Apply entire Phosphorus as basal. Nitrogen in 3 splits: basal, active tillering, panicle initiation.",
+      te: "మొత్తం భాస్వరం విత్తేటప్పుడే వేయాలి. నత్రజని 3 విడతలుగా: నాటు వేసేటప్పుడు, పిలకల దశ, ఈనక దశ.",
+      hi: "पूरा फास्फोरस बेसल खुराक के रूप में डालें। नाइट्रोजन 3 भागों में: बेसल, कल्ले फूटने और बाली आने पर।"
+    }
+  },
+  {
+    id: "fer-2",
+    crop: { en: "Groundnut", te: "వేరుశనగ", hi: "मूंगफली" },
+    fertilizer: { en: "Urea, NPK, Gypsum", te: "యూరియా, ఎన్‌పీకే, జిప్సం", hi: "यूरिया, एनपीके, जिप्सम" },
+    dosage: { en: "Urea: 30 kg, N: 12 kg, P: 20 kg, K: 20 kg, Gypsum: 200 kg per Acre", te: "యూరియా: 30 కిలోలు, N: 12 కిలోలు, P: 20 కిలోలు, K: 20 కిలోలు, జిప్సం: 200 కిలోలు ఎకరాకు", hi: "यूरिया: 30 किलोग्राम, एन: 12 किलोग्राम, पी: 20 किलोग्राम, के: 20 किलोग्राम, जिप्सम: 200 किलोग्राम प्रति एकड़" },
+    stage: {
+      en: "NPK as basal. Apply Gypsum at 45 days (pegging stage) for pod filling.",
+      te: "ఎన్‌పీకే విత్తేటప్పుడే వేయాలి. కాయలు నిండేందుకు 45 రోజుల (ఊడలు దిగే) దశలో జిప్సం వేయాలి.",
+      hi: "एनपीके बेसल के रूप में। फली भरने के लिए 45 दिनों (पेगिंग चरण) पर जिप्सम डालें।"
+    }
+  },
+  {
+    id: "fer-3",
+    crop: { en: "Cotton", te: "పత్తి", hi: "कपास" },
+    fertilizer: { en: "Urea, Nitrogen, Phosphorus, Potassium", te: "యూరియా, నత్రజని, భాస్వరం, పొటాషియం", hi: "यूरिया, नाइट्रोजन, फास्फोरस, पोटेशियम" },
+    dosage: { en: "Urea: 130 kg, N: 60 kg, P: 30 kg, K: 30 kg per Acre", te: "యూరియా: 130 కిలోలు, N: 60 కిలోలు, P: 30 కిలోలు, K: 30 కిలోలు ఎకరాకు", hi: "यूरिया: 130 किलोग्राम, एन: 60 किलोग्राम, पी: 30 किलोग्राम, के: 30 किलोग्राम प्रति एकड़" },
+    stage: {
+      en: "Split N & K into 3 equal parts at 30, 60, and 90 days. Apply under adequate moisture.",
+      te: "నత్రజని & పొటాష్‌ను విత్తిన 30, 60, 90 రోజులలో 3 విడతలుగా వేయాలి. తేమ ఉన్నప్పుడే వేయాలి.",
+      hi: "एन और के को बुवाई के 30, 60 और 90 दिनों में 3 समान भागों में डालें। पर्याप्त नमी में ही प्रयोग करें।"
+    }
+  },
+  {
+    id: "fer-4",
+    crop: { en: "Bengal Gram (Chickpea)", te: "శనగ", hi: "चना (बंगाल ग्राम)" },
+    fertilizer: { en: "Urea, NPK, Sulfur", te: "యూరియా, ఎన్‌పీకే, సల్ఫర్", hi: "यूरिया, एनपीके, सल्फर" },
+    dosage: { en: "Urea: 20 kg, N: 8 kg, P: 20 kg, Sulfur: 10 kg per Acre", te: "యూరియా: 20 కిలోలు, N: 8 కిలోలు, P: 20 కిలోలు, సల్ఫర్: 10 కిలోలు ఎకరాకు", hi: "यूरिया: 20 किलोग्राम, एन: 8 किलोग्राम, पी: 20 किलोग्राम, सल्फर: 10 किलोग्राम प्रति एकड़" },
+    stage: {
+      en: "Apply all fertilizers as basal before sowing. Seed treatment with Rhizobium is highly recommended.",
+      te: "విత్తే ముందే అన్ని ఎరువులు బేసల్ మోతాదుగా వేయాలి. రైజోబియంతో విత్తన శుద్ధి సిఫార్సు చేయబడింది.",
+      hi: "बुवाई से पहले सभी उर्वरकों को बेसल के रूप में डालें। राइजोबियम से बीज उपचार अत्यधिक अनुशंसित है।"
+    }
+  },
+  {
+    id: "fer-5",
+    crop: { en: "Chillies", te: "మిరప", hi: "మిర్చి" },
+    fertilizer: { en: "Organic Manure, Urea, NPK, Micronutrients (Boron/Zinc)", te: "సేంద్రీయ ఎరువు, యూరియా, ఎన్‌పీకే, సూక్ష్మపోషకాలు (బోరాన్/జింక్)", hi: "जैविक खाद, यूरिया, एनपीके, सूक्ष्म पोषक तत्व (बोरान/जिंक)" },
+    dosage: { en: "Manure: 10 tons, Urea: 160 kg, N: 70 kg, P: 35 kg, K: 35 kg per Acre", te: "పశువుల ఎరువు: 10 టన్నులు, యూరియా: 160 కిలోలు, N: 70 కిలోలు, P: 35 కిలోలు, K: 35 కిలోలు ఎకరాకు", hi: "खाद: 10 टन, यूरिया: 160 किलोग्राम, एन: 70 किलोग्राम, पी: 35 किलोग्राम, के: 35 किलोग्राम प्रति एकड़" },
+    stage: {
+      en: "Manure as basal. NPK split in 4 doses. Spray micronutrients at flowering/fruiting.",
+      te: "పశువుల ఎరువు నాటేటప్పుడు. ఎన్‌పీకే ఎరువులు 4 విడతలుగా. పూత/కాత దశలలో సూక్ష్మపోషకాలు పిచికారీ చేయాలి.",
+      hi: "खाद बेसल के रूप में। एनपीके 4 खुराकों में विभाजित। फूल आने/फल लगने पर सूक्ष्म पोषक तत्वों का छिड़काव करें।"
     }
   }
 ];

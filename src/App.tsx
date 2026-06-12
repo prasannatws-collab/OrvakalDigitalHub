@@ -43,7 +43,6 @@ import {
   notices,
   worshipPlaces,
   attractions,
-  rentalCars,
   powerSchedules,
   repairMechanics,
   agriContacts,
@@ -90,7 +89,8 @@ function App() {
   // Sub-tab selectors
   const [directorySubTab, setDirectorySubTab] = useState<'govt' | 'education' | 'grievance' | 'postal' | 'banks' | 'police' | 'hospital' | 'schemes' | null>(null);
   const [selectedSchool, setSelectedSchool] = useState<SchoolTeacher | null>(null);
-  const [selectedSchemeCategory, setSelectedSchemeCategory] = useState<'farmer' | 'students' | 'women' | 'business' | 'insurance' | 'investment' | 'welfare'>('farmer');
+  const [selectedSchemeCategory, setSelectedSchemeCategory] = useState<'farmer' | 'students' | 'women' | 'business' | 'insurance' | 'investment' | 'welfare' | 'all'>('all');
+  const [selectedSchemeType, setSelectedSchemeType] = useState<'central' | 'state' | 'bank' | 'postal' | 'all'>('all');
   const [jobsCommerceSubTab, setJobsCommerceSubTab] = useState<'job' | 'labour'>('job');
   const [farmerSubTab, setFarmerSubTab] = useState<'feeder' | 'mandi' | 'msp' | 'tractor' | 'advisory' | 'crop-holiday' | 'water' | 'repair' | 'agri-officer'>('feeder');
   const [selectedServiceCategory, setSelectedServiceCategory] = useState<string | null>(null);
@@ -679,26 +679,6 @@ function App() {
                 </div>
               </div>
 
-              {/* Industrial Hub News Feed */}
-              <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))' }}>
-                <h3 className="section-title" style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  📰 {lang === 'en' ? "Industrial Hub News" : lang === 'te' ? "పారిశ్రామిక హబ్ వార్తలు" : "औद्योगिक हब समाचार"}
-                </h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
-                  {newsItems.map((news) => (
-                    <div key={news.id} className="notice-item" style={{ margin: 0, padding: '8px 10px', backgroundColor: 'hsl(var(--muted) / 0.25)', borderLeft: '2px solid hsl(var(--secondary))' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'hsl(var(--foreground))' }}>{getTxt(news.title)}</span>
-                        <span style={{ fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))', whiteSpace: 'nowrap' }}>{news.date}</span>
-                      </div>
-                      <p style={{ fontSize: '0.68rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', lineHeight: 1.3 }}>{getTxt(news.summary)}</p>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))' }}>
-                        <span>Source: {getTxt(news.source)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Transit & Transport Desk */}
               <div className="card transport-card">
@@ -794,45 +774,8 @@ function App() {
                 </div>
               </div>
 
-              {/* Tourism, Religious & Day out Places */}
-              <div className="card">
-                <h3 className="section-title" style={{ marginTop: 0 }}>{t.attractions}</h3>
-                <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '4px' }}>
-                  {attractions.map(att => (
-                    <div key={att.id} style={{ minWidth: '220px', width: '220px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', overflow: 'hidden' }}>
-                      <img src={att.image} alt="Attraction preview" style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
-                      <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <h4 style={{ fontSize: '0.78rem' }}>{getTxt(att.name)}</h4>
-                        <p style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))', height: '40px', overflow: 'hidden' }}>{getTxt(att.description)}</p>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', fontWeight: 700, borderTop: '1px solid hsl(var(--border))', paddingTop: '4px', marginTop: '4px' }}>
-                          <span>{getTxt(att.distance)}</span>
-                          <span style={{ color: 'hsl(var(--primary))' }}>Open</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
 
-              {/* Local Travel Cabs & Rental Cars Desk */}
-              <div className="card">
-                <h3 className="section-title" style={{ marginTop: 0 }}>{t.rentalCars}</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {rentalCars.map(car => (
-                    <div key={car.id} style={{ padding: '10px', border: '1px solid hsl(var(--border))', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div>
-                        <strong style={{ fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}><Car size={14} /> {getTxt(car.provider)}</strong>
-                        <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{getTxt(car.vehicle)}</div>
-                        <div style={{ fontSize: '0.65rem', color: 'hsl(var(--secondary))', fontWeight: 'bold', marginTop: '2px' }}>{getTxt(car.rate)}</div>
-                      </div>
-                      <a href={`tel:${car.phone}`} style={{ backgroundColor: car.available ? '#16a34a' : 'hsl(var(--muted))', color: 'white', padding: '6px 10px', borderRadius: '4px', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 700 }}>
-                        <Phone size={10} style={{ marginRight: '4px' }} /> {car.available ? t.callNow : t.busy}
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Quick stats panel */}
               <div className="card">
@@ -863,6 +806,45 @@ function App() {
                 </div>
               </div>
 
+              {/* Industrial Hub News Feed */}
+              <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))' }}>
+                <h3 className="section-title" style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  📰 {lang === 'en' ? "Industrial Hub News" : lang === 'te' ? "పారిశ్రామిక హబ్ వార్తలు" : "औद्योगिक हब समाचार"}
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
+                  {newsItems.map((news) => (
+                    <div key={news.id} className="notice-item" style={{ margin: 0, padding: '8px 10px', backgroundColor: 'hsl(var(--muted) / 0.25)', borderLeft: '2px solid hsl(var(--secondary))' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'hsl(var(--foreground))' }}>{getTxt(news.title)}</span>
+                        <span style={{ fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))', whiteSpace: 'nowrap' }}>{news.date}</span>
+                      </div>
+                      <p style={{ fontSize: '0.68rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', lineHeight: 1.3 }}>{getTxt(news.summary)}</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))' }}>
+                        <span>Source: {getTxt(news.source)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {/* Tourism, Religious & Day out Places */}
+              <div className="card">
+                <h3 className="section-title" style={{ marginTop: 0 }}>{t.attractions}</h3>
+                <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '4px' }}>
+                  {attractions.map(att => (
+                    <div key={att.id} style={{ minWidth: '220px', width: '220px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', overflow: 'hidden' }}>
+                      <img src={att.image} alt="Attraction preview" style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
+                      <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <h4 style={{ fontSize: '0.78rem' }}>{getTxt(att.name)}</h4>
+                        <p style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))', height: '40px', overflow: 'hidden' }}>{getTxt(att.description)}</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', fontWeight: 700, borderTop: '1px solid hsl(var(--border))', paddingTop: '4px', marginTop: '4px' }}>
+                          <span>{getTxt(att.distance)}</span>
+                          <span style={{ color: 'hsl(var(--primary))' }}>Open</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 
@@ -1198,22 +1180,47 @@ function App() {
                         </p>
                       </div>
                       
-                      {/* Scheme category switcher */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {(['farmer', 'students', 'women', 'business', 'insurance', 'investment', 'welfare'] as const).map(cat => (
+                      {/* 1. Scheme Provider Type Filter (Central, State, etc) */}
+                      <div className="tabs-header" style={{ marginBottom: '12px' }}>
+                        {(['central', 'state', 'bank', 'postal', 'all'] as const).map(type => (
+                          <button
+                            key={type}
+                            className={`services-menu-card ${selectedSchemeType === type ? 'active' : ''}`}
+                            onClick={() => setSelectedSchemeType(type)}
+                            style={{ 
+                              padding: '8px 16px', 
+                              flexDirection: 'row', 
+                              justifyContent: 'center', 
+                              margin: 0, 
+                              minHeight: 'auto',
+                              flexShrink: 0,
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: selectedSchemeType === type ? 'white' : 'hsl(var(--primary))' }}>
+                              {type === 'all' ? 'All Providers' : type === 'state' ? 'State Govt' : type === 'central' ? 'Central Govt' : type === 'bank' ? 'Bank' : 'Postal'}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* 2. Category Type Filter (Farmer, Students, etc) */}
+                      <div className="tabs-header" style={{ marginBottom: '16px' }}>
+                        {(['farmer', 'students', 'women', 'business', 'insurance', 'investment', 'welfare', 'all'] as const).map(cat => (
                           <button
                             key={cat}
                             className={`tab-pill ${selectedSchemeCategory === cat ? 'active' : ''}`}
                             onClick={() => setSelectedSchemeCategory(cat)}
-                            style={{ fontSize: '0.65rem', padding: '4px 10px' }}
+                            style={{ fontSize: '0.65rem', padding: '6px 12px' }}
                           >
-                            {cat === 'farmer' && "🌾 " + (lang === 'en' ? "Farmer" : lang === 'te' ? "రైతు" : "किसान")}
-                            {cat === 'students' && "🎓 " + (lang === 'en' ? "Students" : lang === 'te' ? "విద్యార్థి" : "छात्र")}
-                            {cat === 'women' && "👩 " + (lang === 'en' ? "Women" : lang === 'te' ? "మహిళ" : "महिला")}
-                            {cat === 'business' && "💼 " + (lang === 'en' ? "Business" : lang === 'te' ? "వ్యాపారం" : "व्यापार")}
-                            {cat === 'insurance' && "🛡️ " + (lang === 'en' ? "Insurance" : lang === 'te' ? "బీమా" : "बीमा")}
-                            {cat === 'investment' && "💰 " + (lang === 'en' ? "Savings" : lang === 'te' ? "పొదుపు" : "बचत")}
-                            {cat === 'welfare' && "🏡 " + (lang === 'en' ? "Welfare" : lang === 'te' ? "సంక్షేమం" : "कल्याण")}
+                            {cat === 'farmer' && "🌾 Farmer"}
+                            {cat === 'students' && "🎓 Students"}
+                            {cat === 'women' && "👩 Women"}
+                            {cat === 'business' && "💼 Business"}
+                            {cat === 'insurance' && "🛡️ Insurance"}
+                            {cat === 'investment' && "💰 Savings"}
+                            {cat === 'welfare' && "🏡 Welfare"}
+                            {cat === 'all' && "🌐 All categories"}
                           </button>
                         ))}
                       </div>
@@ -1221,7 +1228,7 @@ function App() {
                       {/* Display Schemes */}
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {govtSchemes
-                          .filter(s => s.category === selectedSchemeCategory)
+                          .filter(s => (selectedSchemeCategory === 'all' || s.category === selectedSchemeCategory) && (selectedSchemeType === 'all' || s.type === selectedSchemeType))
                           .map(scheme => (
                             <div key={scheme.id} className="card" style={{ padding: '14px' }}>
                               <h4 style={{ fontSize: '0.8rem', color: 'hsl(var(--primary))', fontWeight: 800 }}>{getTxt(scheme.title)}</h4>
