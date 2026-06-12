@@ -1,0 +1,182 @@
+import { Bell } from 'lucide-react';
+import { useLanguage } from '../../../core/context/LanguageContext';
+import { useDomainData } from '../../../core/context/DomainDataContext';
+import { DashboardBanner } from './DashboardBanner';
+import { WeatherClockCard } from './WeatherClockCard';
+import { PersonaSelector } from './PersonaSelector';
+import { TransitDesk } from './TransitDesk';
+import { notices } from '../../notice-board/data/noticesData';
+import { industries } from '../../jobs/data/jobsData';
+import { newsItems } from '../../directory/data/directoryData';
+import { attractions } from '../../hospitality/data/hospitalityData';
+import type { IndustrialPlant } from '../../../types';
+
+interface DashboardViewProps {
+  onShortcutClick: (tab: 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights', subTab?: string, query?: string) => void;
+  onSosClick: () => void;
+  onIndustrySelect: (industry: IndustrialPlant) => void;
+}
+
+export const DashboardView = ({
+  onShortcutClick,
+  onSosClick,
+  onIndustrySelect
+}: DashboardViewProps) => {
+  const { t, getTxt, lang } = useLanguage();
+  const { localJobs } = useDomainData();
+
+  const handleTransportScroll = () => {
+    onShortcutClick('home');
+    setTimeout(() => {
+      const el = document.querySelector('.transport-card');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 150);
+  };
+
+  return (
+    <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Orvakal Banner */}
+      <DashboardBanner />
+
+      {/* Weather & Clock Card */}
+      <WeatherClockCard />
+
+      {/* Persona Search Deck */}
+      <PersonaSelector
+        onShortcutClick={onShortcutClick}
+        onSosClick={onSosClick}
+        onTransportScroll={handleTransportScroll}
+      />
+
+      {/* Bulletin Board Notice List */}
+      <div className="card">
+        <h3 className="section-title" style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Bell size={15} style={{ color: 'hsl(var(--primary))' }} />
+          {lang === 'en' ? "Notice Board" : lang === 'te' ? "సమాచార బోర్డు" : "सूचना पट्ट"}
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {notices.map((n) => (
+            <div key={n.id} className={`notice-item ${n.type === 'alert' ? 'alert' : ''}`} style={{ margin: 0, borderLeftWidth: '4px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800 }}>{getTxt(n.title)}</span>
+                <span style={{ fontSize: '0.62rem', color: 'hsl(var(--muted-foreground))' }}>{n.date}</span>
+              </div>
+              <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', lineHeight: 1.3, marginBlockEnd: 0 }}>
+                {getTxt(n.content)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Transit & Transport Desk */}
+      <TransitDesk />
+
+      {/* Quick stats panel */}
+      <div className="card" style={{ border: '2px solid hsl(var(--primary) / 0.18)', boxShadow: '0 8px 24px -6px hsl(var(--primary) / 0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <h3 className="section-title" style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800 }}>{t.quickStats}</h3>
+          <button
+            className="btn btn-primary"
+            style={{
+              flex: 'none',
+              width: 'auto',
+              fontSize: '0.72rem',
+              padding: '5px 12px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, #be123c 0%, #e11d48 100%)',
+              color: 'white',
+              fontWeight: 800,
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 10px rgba(190, 18, 60, 0.25)',
+              transition: 'transform 0.2s',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            onClick={() => onShortcutClick('insights')}
+          >
+            <span>💡 Hub Insights</span>
+          </button>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+          <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', textAlign: 'center', cursor: 'pointer' }} onClick={() => onShortcutClick('home', undefined, 'industry')}>
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{industries.length}</div>
+            <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{t.activeIndustries}</div>
+          </div>
+          <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', textAlign: 'center', cursor: 'pointer' }} onClick={() => onShortcutClick('jobs', 'job')}>
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{localJobs.length}</div>
+            <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{t.openJobs}</div>
+          </div>
+        </div>
+
+        {/* Active Industries Badges */}
+        <div style={{ marginTop: '8px' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'hsl(var(--muted-foreground))', display: 'block', marginBottom: '6px' }}>
+            🏢 {t.activeIndustriesList || "Active Mega Industries:"}
+          </span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {industries.map(ind => (
+              <span
+                key={ind.id}
+                className="badge badge-info"
+                style={{ fontSize: '0.6rem', padding: '4px 8px', cursor: 'pointer' }}
+                onClick={() => onIndustrySelect(ind)}
+              >
+                {getTxt(ind.name).replace(" Ultra Mega Solar Park", "").replace(" Plant", "").replace(" Limited", "").replace(" (APIIC)", "")}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Industrial Hub News Feed */}
+      <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))' }}>
+        <h3 className="section-title" style={{ marginTop: 0, display: 'flex', alignItems: 'center', gap: '6px' }}>
+          📰 {lang === 'en' ? "Industrial Hub News" : lang === 'te' ? "పారిశ్రామిక హబ్ వార్తలు" : "औद्योगिक हब समाचार"}
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
+          {newsItems.map((news) => (
+            <div key={news.id} className="notice-item" style={{ margin: 0, padding: '8px 10px', backgroundColor: 'hsl(var(--muted) / 0.25)', borderLeft: '2px solid hsl(var(--secondary))' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'hsl(var(--foreground))' }}>{getTxt(news.title)}</span>
+                <span style={{ fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))', whiteSpace: 'nowrap' }}>{news.date}</span>
+              </div>
+              <p style={{ fontSize: '0.68rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', lineHeight: 1.3, marginBlockEnd: 0 }}>
+                {getTxt(news.summary)}
+              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', fontSize: '0.58rem', color: 'hsl(var(--muted-foreground))' }}>
+                <span>Source: {getTxt(news.source)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Tourism, Religious & Day out Places */}
+      <div className="card">
+        <h3 className="section-title" style={{ marginTop: 0 }}>{t.attractions}</h3>
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: '4px' }}>
+          {attractions.map(att => (
+            <div key={att.id} style={{ minWidth: '220px', width: '220px', backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px', overflow: 'hidden' }}>
+              <img src={att.image} alt="Attraction preview" style={{ width: '100%', height: '100px', objectFit: 'cover' }} />
+              <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <h4 style={{ fontSize: '0.78rem', margin: 0 }}>{getTxt(att.name)}</h4>
+                <p style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))', height: '40px', overflow: 'hidden', margin: 0 }}>
+                  {getTxt(att.description)}
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', fontWeight: 700, borderTop: '1px solid hsl(var(--border))', paddingTop: '4px', marginTop: '4px' }}>
+                  <span>{getTxt(att.distance)}</span>
+                  <span style={{ color: 'hsl(var(--primary))' }}>Open</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
