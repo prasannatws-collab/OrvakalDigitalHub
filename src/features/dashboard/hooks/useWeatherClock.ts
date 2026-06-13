@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
+import { WeatherService, defaultWeatherData } from '../services/weatherService';
+import type { WeatherData } from '../services/weatherService';
+
+const weatherService = new WeatherService();
 
 export const useWeatherClock = () => {
   const [timeString, setTimeString] = useState('');
+  const [weatherData, setWeatherData] = useState<WeatherData>(defaultWeatherData);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
 
   useEffect(() => {
     const updateTime = () => {
@@ -13,6 +20,27 @@ export const useWeatherClock = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        setWeatherLoading(true);
+        const data = await weatherService.fetchWeather();
+        setWeatherData(data);
+        setWeatherError(null);
+      } catch (err: any) {
+        console.error("Failed to load weather data:", err);
+        setWeatherError(err?.message || "Failed to load weather data");
+      } finally {
+        setWeatherLoading(false);
+      }
+    };
+
+    fetchWeather();
+    // Refresh weather every 15 minutes
+    const interval = setInterval(fetchWeather, 900000);
+    return () => clearInterval(interval);
+  }, []);
+
   const getGreetingKey = (): 'greetingMorning' | 'greetingEvening' | 'greetingNight' => {
     const hour = new Date().getHours();
     if (hour < 12) return 'greetingMorning';
@@ -20,5 +48,11 @@ export const useWeatherClock = () => {
     return 'greetingNight';
   };
 
-  return { timeString, getGreetingKey };
+  return { 
+    timeString, 
+    getGreetingKey, 
+    weatherData, 
+    weatherLoading, 
+    weatherError 
+  };
 };

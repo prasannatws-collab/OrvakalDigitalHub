@@ -1,29 +1,25 @@
 import { Bell } from 'lucide-react';
 import { useLanguage } from '../../../core/context/LanguageContext';
-import { useDomainData } from '../../../core/context/DomainDataContext';
 import { DashboardBanner } from './DashboardBanner';
 import { WeatherClockCard } from './WeatherClockCard';
 import { PersonaSelector } from './PersonaSelector';
 import { TransitDesk } from './TransitDesk';
 import { notices } from '../../notice-board/data/noticesData';
-import { industries } from '../../jobs/data/jobsData';
 import { newsItems } from '../../directory/data/directoryData';
 import { attractions } from '../../hospitality/data/hospitalityData';
-import type { IndustrialPlant } from '../../../types';
 
 interface DashboardViewProps {
   onShortcutClick: (tab: 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights', subTab?: string, query?: string) => void;
   onSosClick: () => void;
-  onIndustrySelect: (industry: IndustrialPlant) => void;
+  onAirportClick: () => void;
 }
 
 export const DashboardView = ({
   onShortcutClick,
   onSosClick,
-  onIndustrySelect
+  onAirportClick
 }: DashboardViewProps) => {
   const { t, getTxt, lang } = useLanguage();
-  const { localJobs } = useDomainData();
 
   const handleTransportScroll = () => {
     onShortcutClick('home');
@@ -38,7 +34,7 @@ export const DashboardView = ({
   return (
     <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {/* Orvakal Banner */}
-      <DashboardBanner />
+      <DashboardBanner onShortcutClick={onShortcutClick} onAirportClick={onAirportClick} />
 
       {/* Weather & Clock Card */}
       <WeatherClockCard />
@@ -74,64 +70,7 @@ export const DashboardView = ({
       {/* Transit & Transport Desk */}
       <TransitDesk />
 
-      {/* Quick stats panel */}
-      <div className="card" style={{ border: '2px solid hsl(var(--primary) / 0.18)', boxShadow: '0 8px 24px -6px hsl(var(--primary) / 0.08)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-          <h3 className="section-title" style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800 }}>{t.quickStats}</h3>
-          <button
-            className="btn btn-primary"
-            style={{
-              flex: 'none',
-              width: 'auto',
-              fontSize: '0.72rem',
-              padding: '5px 12px',
-              borderRadius: '20px',
-              background: 'linear-gradient(135deg, #be123c 0%, #e11d48 100%)',
-              color: 'white',
-              fontWeight: 800,
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 4px 10px rgba(190, 18, 60, 0.25)',
-              transition: 'transform 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}
-            onClick={() => onShortcutClick('insights')}
-          >
-            <span>💡 Hub Insights</span>
-          </button>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
-          <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', textAlign: 'center', cursor: 'pointer' }} onClick={() => onShortcutClick('home', undefined, 'industry')}>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{industries.length}</div>
-            <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{t.activeIndustries}</div>
-          </div>
-          <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', textAlign: 'center', cursor: 'pointer' }} onClick={() => onShortcutClick('jobs', 'job')}>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{localJobs.length}</div>
-            <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))' }}>{t.openJobs}</div>
-          </div>
-        </div>
 
-        {/* Active Industries Badges */}
-        <div style={{ marginTop: '8px' }}>
-          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'hsl(var(--muted-foreground))', display: 'block', marginBottom: '6px' }}>
-            🏢 {t.activeIndustriesList || "Active Mega Industries:"}
-          </span>
-          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-            {industries.map(ind => (
-              <span
-                key={ind.id}
-                className="badge badge-info"
-                style={{ fontSize: '0.6rem', padding: '4px 8px', cursor: 'pointer' }}
-                onClick={() => onIndustrySelect(ind)}
-              >
-                {getTxt(ind.name).replace(" Ultra Mega Solar Park", "").replace(" Plant", "").replace(" Limited", "").replace(" (APIIC)", "")}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Industrial Hub News Feed */}
       <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))' }}>

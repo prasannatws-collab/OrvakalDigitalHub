@@ -1,11 +1,27 @@
 import { useLanguage } from '../../../core/context/LanguageContext';
+import { registeredCompanies } from '../../../data/registeredCompanies';
+import {
+  industrialPresenceContext,
+  keyCompanies,
+  keyInfrastructure,
+  policyIncentives,
+  hubResources
+} from '../../../data/industrialHubData';
 
 interface InsightsViewProps {
   onBackClick: () => void;
+  onActiveIndustriesClick: () => void;
+  onShortcutClick: (tab: 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights', subTab?: string, query?: string) => void;
+  onCompanySelect: (company: any) => void;
 }
 
-export const InsightsView = ({ onBackClick }: InsightsViewProps) => {
-  const { lang } = useLanguage();
+export const InsightsView = ({
+  onBackClick,
+  onActiveIndustriesClick,
+  onShortcutClick,
+  onCompanySelect
+}: InsightsViewProps) => {
+  const { lang, t, getTxt } = useLanguage();
 
   return (
     <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -20,145 +36,183 @@ export const InsightsView = ({ onBackClick }: InsightsViewProps) => {
           ⬅️ {lang === 'en' ? "Back to Dashboard" : lang === 'te' ? "డ్యాష్‌బోర్డ్‌కు తిరిగి వెళ్ళు" : "डैशबोर्ड पर वापस जाएं"}
         </button>
         <h3 style={{ margin: 0, fontSize: '0.92rem', color: 'hsl(var(--primary))', fontWeight: 800 }}>
-          💡 Orvakal Industrial Hub
+          💡 {lang === 'en' ? "Orvakal Industrial Hub" : lang === 'te' ? "ఓర్వకల్లు పారిశ్రామిక హబ్" : "ओरवाकल औद्योगिक हब"}
         </h3>
+      </div>
+
+      {/* Quick stats panel - Relocated Orvakal At A Glance */}
+      <div className="card" style={{ border: '2px solid hsl(var(--primary) / 0.18)', boxShadow: '0 8px 24px -6px hsl(var(--primary) / 0.08)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+          <h3 className="section-title" style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800 }}>
+            {lang === 'en' ? "Orvakal At A Glance" : lang === 'te' ? "ఓర్వకల్లు ఒక చూపులో" : "ओरवाकल एक नज़र में"}
+          </h3>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '4px' }}>
+          <div 
+            style={{ 
+              padding: '8px', 
+              borderRadius: '8px', 
+              backgroundColor: 'hsl(var(--muted) / 0.4)', 
+              textAlign: 'center', 
+              cursor: 'pointer',
+              transition: 'background-color 0.2s, transform 0.2s',
+              border: '1px solid hsl(var(--border) / 0.2)'
+            }} 
+            className="stats-block-btn"
+            onClick={onActiveIndustriesClick}
+          >
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>{registeredCompanies.length}</div>
+            <div style={{ fontSize: '0.65rem', color: 'hsl(var(--muted-foreground))', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' }}>
+              🏢 {t.activeIndustries}
+            </div>
+          </div>
+          <div 
+            style={{ 
+              padding: '8px', 
+              borderRadius: '8px', 
+              backgroundColor: 'hsl(var(--muted) / 0.4)', 
+              textAlign: 'center', 
+              cursor: 'pointer',
+              transition: 'background-color 0.2s, transform 0.2s',
+              border: '1px solid hsl(var(--border) / 0.2)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '4px'
+            }} 
+            className="stats-block-btn"
+            onClick={() => onShortcutClick('jobs', 'job')}
+          >
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'hsl(var(--primary))', lineHeight: 1 }}>💼</div>
+            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'hsl(var(--muted-foreground))', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' }}>
+              {lang === 'en' ? "Careers at Hub" : lang === 'te' ? "హబ్‌లో ఉద్యోగాలు" : "हब में करियर"} ➔
+            </div>
+          </div>
+        </div>
+
+        {/* Active Industries Badges */}
+        <div style={{ marginTop: '8px' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'hsl(var(--muted-foreground))', display: 'block', marginBottom: '6px' }}>
+            🏢 {t.activeIndustriesList || "Active Mega Industries:"}
+          </span>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {registeredCompanies.map(comp => (
+              <span
+                key={comp.id}
+                className="badge badge-info"
+                style={{ fontSize: '0.6rem', padding: '4px 8px', cursor: 'pointer' }}
+                onClick={() => onCompanySelect(comp)}
+              >
+                {getTxt(comp.name)}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* 1. Context on Industrial Presence */}
       <div className="card" style={{ borderLeft: '4px solid #be123c', padding: '14px' }}>
         <h4 style={{ fontSize: '0.82rem', color: '#be123c', fontWeight: 800, margin: 0 }}>
-          🏢 Context on Industrial Presence
+          🏢 {getTxt(industrialPresenceContext.title)}
         </h4>
         <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginTop: '6px', lineHeight: 1.4, margin: '6px 0 0 0' }}>
-          It is important to distinguish between large-scale anchor industries and the numerous smaller engineering and manufacturing units already operating in the Kurnool district, many of which serve the regional industrial ecosystem.
+          {getTxt(industrialPresenceContext.content)}
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', paddingLeft: '8px', borderLeft: '2px solid hsl(var(--border))' }}>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Diverse Sectoral Base:</strong>
-            <span style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginLeft: '4px' }}>
-              Historically, the area has hosted various small to medium-scale machinery manufacturers, foundries, and fabrication units. You may find local listings for entities involved in engineering, packaging, and industrial equipment supplying to the region.
-            </span>
+        {industrialPresenceContext.bullets && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', paddingLeft: '8px', borderLeft: '2px solid hsl(var(--border))' }}>
+            {industrialPresenceContext.bullets.map((bullet, idx) => (
+              <div key={idx}>
+                <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>{getTxt(bullet.boldText)}</strong>
+                <span style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginLeft: '4px' }}>
+                  {getTxt(bullet.normalText)}
+                </span>
+              </div>
+            ))}
           </div>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Upcoming Growth:</strong>
-            <span style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginLeft: '4px' }}>
-              The state government is actively marketing the hub to reach a massive investment target of ₹50,000 crore. Consequently, many more "registrations" and land allotments are expected as the infrastructure (power, water, and logistics) is finalized.
-            </span>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 2. Key Companies Recently Linked to Orvakal */}
       <div className="card" style={{ borderLeft: '4px solid #0369a1', padding: '14px' }}>
         <h4 style={{ fontSize: '0.82rem', color: '#0369a1', fontWeight: 800, margin: 0 }}>
-          🏭 Key Companies Recently Linked to Orvakal
+          🏭 {lang === 'en' ? "Key Companies Recently Linked to Orvakal" : lang === 'te' ? "ఓర్వకల్లుతో ఇటీవల అనుసంధానించబడిన ప్రముఖ కంపెనీలు" : "ओरवाकल से हाल ही में जुड़ी प्रमुख कंपनियां"}
         </h4>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
-          <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
-            <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Virupaksha Organics Ltd</strong>
-            <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
-              A Hyderabad-based company that has received approval for the allotment of over 100 acres in the Guttapadu Industrial Cluster. They are establishing a major manufacturing facility for Active Pharmaceutical Ingredients (APIs) and organic chemicals, with a substantial investment commitment (approx. ₹1,225 crore) creating 1,500+ jobs.
-            </p>
-          </div>
-          <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
-            <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Sigachi Industries Ltd</strong>
-            <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
-              Another Hyderabad-based firm specializing in pharmaceutical excipients, such as microcrystalline cellulose (MCC). They are expanding their operations to the Orvakal node to establish a facility for Bulk Drugs, Drug Intermediates, and Specialty Chemicals on approximately 25 acres (Plot A-10).
-            </p>
-          </div>
-          <div style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
-            <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>Sri Mandava Bio-Tech & Partners</strong>
-            <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
-              Developing high-value agro-processing and biological packaging operations to leverage the local logistics networks and primary agricultural produce in the Kurnool district.
-            </p>
-          </div>
+          {keyCompanies.map(comp => (
+            <div key={comp.id} style={{ padding: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', borderRadius: '6px' }}>
+              <strong style={{ fontSize: '0.75rem', color: 'hsl(var(--foreground))' }}>{getTxt(comp.name)}</strong>
+              <p style={{ margin: '2px 0 0 0', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                {getTxt(comp.description)}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* 3. Key Infrastructure & Support Features */}
       <div className="card" style={{ borderLeft: '4px solid #15803d', padding: '14px' }}>
         <h4 style={{ fontSize: '0.82rem', color: '#15803d', fontWeight: 800, margin: 0 }}>
-          🔌 Key Infrastructure & Support Features
+          🔌 {getTxt(keyInfrastructure.title)}
         </h4>
         <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', marginTop: '6px', lineHeight: 1.4, margin: '6px 0 0 0' }}>
-          To attract investment, the Andhra Pradesh government provides a business-friendly environment at the Orvakal Industrial Hub by focusing on "plug-and-play" infrastructure and strategic policy support.
+          {getTxt(keyInfrastructure.content)}
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Power & Water:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
-              Dedicated, reliable power supply and water allocation (sourced from the Srisailam foreshore/Muchumarri project) are key priorities for industrial utility.
-            </p>
+        {keyInfrastructure.bullets && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+            {keyInfrastructure.bullets.map((bullet, idx) => (
+              <div key={idx}>
+                <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>{getTxt(bullet.boldText)}</strong>
+                <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                  {getTxt(bullet.normalText)}
+                </p>
+              </div>
+            ))}
           </div>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Logistics:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
-              The hub is designed with integrated logistics zones, internal road networks, and storm drainage systems to support heavy and light manufacturing.
-            </p>
-          </div>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Waste Management:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
-              Planned Common Effluent Treatment Plants (CETPs) and bio-waste disposal facilities are included in the master plan to meet environmental compliance standards.
-            </p>
-          </div>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Sector-Specific Parks:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
-              The hub includes dedicated clusters like the Guttapadu MSME Park, which is specifically designed to provide smaller enterprises with ready-to-use land and supporting utilities at subsidized rates to encourage rapid scaling.
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 4. Policy Incentives & Land Allotment */}
       <div className="card" style={{ borderLeft: '4px solid #6d28d9', padding: '14px' }}>
         <h4 style={{ fontSize: '0.82rem', color: '#6d28d9', fontWeight: 800, margin: 0 }}>
-          ⚖️ Policy Incentives & Land Allotment
+          ⚖️ {getTxt(policyIncentives.title)}
         </h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• MSME Support:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
-              Incentives for small and medium-sized enterprises are generally aligned with state industrial policies (such as the Industrial Development Policy), which often include subsidies on capital investment, power cost reimbursements, and interest subvention for loans.
-            </p>
+        {policyIncentives.bullets && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+            {policyIncentives.bullets.map((bullet, idx) => (
+              <div key={idx}>
+                <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>{getTxt(bullet.boldText)}</strong>
+                <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                  {getTxt(bullet.normalText)}
+                </p>
+              </div>
+            ))}
           </div>
-          <div>
-            <strong style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))' }}>• Land Allotment:</strong>
-            <p style={{ margin: '2px 0 0 8px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
-              The Andhra Pradesh Industrial Infrastructure Corporation (APIIC) acts as the nodal agency, facilitating land allotment and ensuring that the land is properly cleared for industrial use.
-            </p>
-          </div>
-        </div>
+        )}
       </div>
 
       {/* 5. Getting Started & Resources */}
       <div className="card" style={{ borderLeft: '4px solid #b45309', padding: '14px' }}>
         <h4 style={{ fontSize: '0.82rem', color: '#b45309', fontWeight: 800, margin: 0 }}>
-          🔗 Getting Started & Resources
+          🔗 {lang === 'en' ? "Getting Started & Resources" : lang === 'te' ? "ప్రారంభించడం & అవసరమైన వనరులు" : "शुरुआत करना और संसाधन"}
         </h4>
         <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', marginTop: '4px', margin: '4px 0' }}>
-          For companies interested in setting up operations, the following resources are typically used to access official incentive details and land application processes:
+          {lang === 'en' 
+            ? "For companies interested in setting up operations, the following resources are typically used to access official incentive details and land application processes:"
+            : lang === 'te'
+            ? "కార్యకలాపాలను ప్రారంభించడానికి ఆసక్తి ఉన్న కంపెనీల కోసం, అధికారిక ప్రోత్సాహకాలు మరియు భూమి దరఖాస్తు ప్రక్రియలకు సంబంధించిన వివరాలను పొందడానికి సాధారణంగా క్రింది వనరులు ఉపయోగించబడతాయి:"
+            : "परिचालन शुरू करने की इच्छुक कंपनियों के लिए, आधिकारिक प्रोत्साहन विवरण और भूमि आवेदन प्रक्रियाओं तक पहुँचने के लिए आम तौर पर निम्नलिखित संसाधनों का उपयोग किया जाता है:"
+          }
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
-          <div style={{ fontSize: '0.7rem' }}>
-            <strong style={{ color: 'hsl(var(--foreground))' }}>APIIC (Andhra Pradesh Industrial Infrastructure Corporation):</strong>
-            <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
-              The primary authority for land allotments and infrastructure development. You can monitor their site for active RFPs (Requests for Proposal) and land availability.
-            </p>
-          </div>
-          <div style={{ fontSize: '0.7rem' }}>
-            <strong style={{ color: 'hsl(var(--foreground))' }}>Andhra Pradesh e-Procurement Portal:</strong>
-            <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
-              Often used for bidding on industrial projects or accessing tender documents related to the development of the Orvakal hub.
-            </p>
-          </div>
-          <div style={{ fontSize: '0.7rem' }}>
-            <strong style={{ color: 'hsl(var(--foreground))' }}>Invest India / India Investment Grid (IIG):</strong>
-            <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))' }}>
-              A national platform that tracks major infrastructure projects and often lists specific investment opportunities and contact details for the project sponsors.
-            </p>
-          </div>
+          {hubResources.map(res => (
+            <div key={res.id} style={{ fontSize: '0.7rem' }}>
+              <strong style={{ color: 'hsl(var(--foreground))' }}>{getTxt(res.title)}</strong>
+              <p style={{ margin: '2px 0 0 8px', color: 'hsl(var(--muted-foreground))', lineHeight: 1.35 }}>
+                {getTxt(res.description)}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </div>

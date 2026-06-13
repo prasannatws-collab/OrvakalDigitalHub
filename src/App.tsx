@@ -10,7 +10,9 @@ import {
   Sun,
   Search,
   ShieldAlert,
-  Phone
+  Phone,
+  Plane,
+  AlertCircle
 } from 'lucide-react';
 
 // Contexts
@@ -32,11 +34,311 @@ import { NoticeDrawer } from './features/notice-board/components/NoticeDrawer';
 // Data / Mocks / Types
 import { emergencies } from './features/directory/data/directoryData';
 import type { IndustrialPlant } from './types';
+import { registeredCompanies } from './data/registeredCompanies';
+import type { RegisteredCompany } from './data/registeredCompanies';
 
 type ActiveTab = 'home' | 'directory' | 'farmer' | 'hospitality' | 'jobs' | 'insights';
 type DirectorySubTab = 'govt' | 'education' | 'grievance' | 'postal' | 'banks' | 'police' | 'hospital' | 'schemes' | 'committees';
 type FarmerSubTab = 'feeder' | 'mandi' | 'msp' | 'tractor' | 'advisory' | 'crop-holiday' | 'water' | 'repair' | 'agri-officer';
 type JobsCommerceSubTab = 'job' | 'labour' | 'industries';
+
+interface SearchOption {
+  name: { en: string; te: string; hi: string };
+  category: { en: string; te: string; hi: string };
+  icon: string;
+  onClick: (
+    handleShortcutClick: (tabName: ActiveTab, subTabName?: string, query?: string) => void,
+    setActiveTab: (tab: ActiveTab) => void
+  ) => void;
+}
+
+const searchableOptions: SearchOption[] = [
+  // Govt & Info
+  {
+    name: { en: "Government Officers", te: "ప్రభుత్వ అధికారులు", hi: "सरकारी अधिकारी" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "👥",
+    onClick: (nav) => nav('directory', 'govt')
+  },
+  {
+    name: { en: "Schools & Education", te: "పాఠశాలలు & విద్యా సంస్థలు", hi: "स्कूल और शिक्षा केंद्र" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "🏫",
+    onClick: (nav) => nav('directory', 'education')
+  },
+  {
+    name: { en: "Panchayat Grievance Desk", te: "పంచాయతీ ఫిర్యాదుల విభాగం", hi: "पंचायत शिकायत डेस्क" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "✍️",
+    onClick: (nav) => nav('directory', 'grievance')
+  },
+  {
+    name: { en: "Post Office & Postal Services", te: "తపాలా కార్యాలయం", hi: "डाकघर और डाक सेवाएं" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "📮",
+    onClick: (nav) => nav('directory', 'postal')
+  },
+  {
+    name: { en: "Banks & ATMs", te: "బ్యాంకులు & ఏటీఎంలు", hi: "बैंक और एटीएम" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "🏦",
+    onClick: (nav) => nav('directory', 'banks')
+  },
+  {
+    name: { en: "Police Station", te: "పోలీస్ స్టేషన్", hi: "पुलिस स्टेशन" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "👮",
+    onClick: (nav) => nav('directory', 'police')
+  },
+  {
+    name: { en: "Hospital & PHC", te: "హాస్పిటల్ & PHC", hi: "अस्पताल & पीएचसी" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "🏥",
+    onClick: (nav) => nav('directory', 'hospital')
+  },
+  {
+    name: { en: "Government Schemes", te: "ప్రభుత్వ పథకాలు", hi: "सरकारी योजनाएं" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "📜",
+    onClick: (nav) => nav('directory', 'schemes')
+  },
+  {
+    name: { en: "Village Committees", te: "గ్రామ కమిటీలు", hi: "ग्राम समितियां" },
+    category: { en: "Govt & Info", te: "ప్రభుత్వ & సమాచారం", hi: "शासन और सूचना" },
+    icon: "🤝",
+    onClick: (nav) => nav('directory', 'committees')
+  },
+
+  // Farmer Desk
+  {
+    name: { en: "Power Feeder Schedule", te: "వ్యవసాయ కరెంట్ సరఫరా వేళలు", hi: "कृषि बिजली फीडर समय" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "⚡",
+    onClick: (nav) => nav('farmer', 'feeder')
+  },
+  {
+    name: { en: "Agri Mandi Rates (Crops)", te: "వ్యవసాయ మార్కెట్ ధరలు - పంటలు", hi: "कृषि मंडी दरें - फसलें" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🌾",
+    onClick: (nav) => nav('farmer', 'mandi')
+  },
+  {
+    name: { en: "Minimum Support Price (MSP)", te: "ప్రభుత్వ కనీస మద్దతు ధర (MSP)", hi: "न्यूनतम समर्थन मूल्य (MSP)" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🏷️",
+    onClick: (nav) => nav('farmer', 'msp')
+  },
+  {
+    name: { en: "Tractor & Harvester Sharing", te: "ట్రాక్టర్ & హార్వెస్టర్ల అద్దె", hi: "ट्रैक्टर और हार्वेस्टर शेयरिंग" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🚜",
+    onClick: (nav) => nav('farmer', 'tractor')
+  },
+  {
+    name: { en: "Crop Advisories", te: "వ్యవసాయ సలహాలు", hi: "फसल स्वास्थ्य सलाह" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🌱",
+    onClick: (nav) => nav('farmer', 'advisory')
+  },
+  {
+    name: { en: "Crop Holiday & Advisories", te: "పంట విరామం & సలహాలు", hi: "फसल अवकाश और सलाह" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🍂",
+    onClick: (nav) => nav('farmer', 'crop-holiday')
+  },
+  {
+    name: { en: "Irrigation Water Levels", te: "జలాశయాలు & కాలువ నీటి మట్టాలు", hi: "जलाशय और नहर जल स्तर" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "💧",
+    onClick: (nav) => nav('farmer', 'water')
+  },
+  {
+    name: { en: "Motor & Tractor Repairs", te: "మోటార్ & ట్రాక్టర్ మరమ్మతులు", hi: "मोटर और ट्रैक्टर मरम्मत" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "🔧",
+    onClick: (nav) => nav('farmer', 'repair')
+  },
+  {
+    name: { en: "Agri Support Officers", te: "వ్యవసాయ అధికారులు", hi: "कृषि अधिकारी" },
+    category: { en: "Farmer Desk", te: "రైతు డెస్క్", hi: "किसान डेस्क" },
+    icon: "👨‍🌾",
+    onClick: (nav) => nav('farmer', 'agri-officer')
+  },
+
+  // Services Catalog
+  {
+    name: { en: "Food & Restaurants", te: "రెస్టారెంట్లు & భోజనం", hi: "भोजन और रेस्तरां" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🍕",
+    onClick: (nav) => nav('hospitality', 'restaurant')
+  },
+  {
+    name: { en: "Hotel/Stays", te: "హోటళ్ళు & వసతి గృహాలు (Hotel/Stays)", hi: "होटल और होमस्टे (Hotel/Stays)" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🏨",
+    onClick: (nav) => nav('hospitality', 'hotel')
+  },
+  {
+    name: { en: "Home Rentals & PGs", te: "ఇళ్ళు & పీజీ అద్దెలు", hi: "मकान और पीजी किराया" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🏠",
+    onClick: (nav) => nav('hospitality', 'rentals')
+  },
+  {
+    name: { en: "Banquet & Event Halls", te: "ఫంక్షన్ హాళ్ళు & ఈవెంట్స్", hi: "बैंक्वेट और इवेंट हॉल" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🎪",
+    onClick: (nav) => nav('hospitality', 'banquet')
+  },
+  {
+    name: { en: "Tuition & Coaching", te: "ట్యూషన్లు & కోచింగ్", hi: "ट्यूशन और कोचिंग" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "📖",
+    onClick: (nav) => nav('hospitality', 'tuitions')
+  },
+  {
+    name: { en: "Boutique & Ladies Tailors", te: "బోటిక్ & లేడీస్ టైలర్స్", hi: "बुटीक और लेडीज टेलर्स" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🧵",
+    onClick: (nav) => nav('hospitality', 'boutique')
+  },
+  {
+    name: { en: "Cloth Shopping", te: "బట్టల దుకాణాలు", hi: "कपड़ों की दुकानें" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🛍️",
+    onClick: (nav) => nav('hospitality', 'clothing')
+  },
+  {
+    name: { en: "Wholesalers & Kirana", te: "హోల్‌సేల్ & కిరాణా వర్తకులు", hi: "थोक और किराना व्यापारी" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🛒",
+    onClick: (nav) => nav('hospitality', 'wholesaler')
+  },
+  {
+    name: { en: "Hardware & Electricals", te: "హార్డ్‌വേర్ & ఎలక్ట్రికల్స్", hi: "हार्डवेयर और इलेक्ट्रिकल्स" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🛠️",
+    onClick: (nav) => nav('hospitality', 'hardware')
+  },
+  {
+    name: { en: "Stationery & Xerox", te: "స్టేషనరీ & జిరాక్స్", hi: "स्टेशनरी और ज़ेरॉक्स" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "✏️",
+    onClick: (nav) => nav('hospitality', 'stationery')
+  },
+  {
+    name: { en: "Event Supply (Tents/Sound)", te: "ఈవెంట్స్ సప్లైస్ (డెకరేషన్/సౌండ్)", hi: "इवेंट आपूर्ति (तंबू / ध्वनि)" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🎤",
+    onClick: (nav) => nav('hospitality', 'event_rental')
+  },
+  {
+    name: { en: "Car & Vehicle Rentals", te: "కార్ & వాహనాల అద్దెలు", hi: "कार और वाहन किराया" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🚗",
+    onClick: (nav) => nav('hospitality', 'car_rental')
+  },
+  {
+    name: { en: "Driving Schools", te: "డ్రైవింగ్ స్కూల్స్", hi: "ड्राइविंग स्कूल" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🚘",
+    onClick: (nav) => nav('hospitality', 'driving_school')
+  },
+  {
+    name: { en: "Medical Stores", te: "మందుల దుకాణాలు", hi: "मेडिकल स्टोर" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "💊",
+    onClick: (nav) => nav('hospitality', 'medical')
+  },
+  {
+    name: { en: "Milk Dairies", te: "పాల డెయిరీలు & కేంద్రా‌లు", hi: "दूध डेयरियां" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🥛",
+    onClick: (nav) => nav('hospitality', 'dairy')
+  },
+  {
+    name: { en: "Water Cans & Tankers", te: "మినరల్ వాటర్ & ట్యాంకర్లు", hi: "पानी के कैन and टैंकर" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "💧",
+    onClick: (nav) => nav('hospitality', 'water_supplier')
+  },
+  {
+    name: { en: "Laundry & Dry Cleaning", te: "లాండ్రీ & ఇస్త్రీ సేవలు", hi: "कपड़े धोने और ड्राई क्लीनिंग" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🧺",
+    onClick: (nav) => nav('hospitality', 'laundry')
+  },
+  {
+    name: { en: "Temples", te: "దేవాలయాలు", hi: "मंदिर" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🛕",
+    onClick: (nav) => nav('hospitality', 'temple')
+  },
+  {
+    name: { en: "Mosques", te: "మసీదులు", hi: "मस्जिद" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🕌",
+    onClick: (nav) => nav('hospitality', 'mosque')
+  },
+  {
+    name: { en: "Churches", te: "చర్చీలు", hi: "चर्च" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "⛪",
+    onClick: (nav) => nav('hospitality', 'church')
+  },
+  {
+    name: { en: "Pesticide & Seeds", te: "ఎరువులు & విత్తనాలు", hi: "कीट और बीज" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🌾",
+    onClick: (nav) => nav('hospitality', 'pesticide')
+  },
+  {
+    name: { en: "Courier & Cargo", te: "కొరియర్ & కార్గో సేవలు", hi: "कूरियर और कार्गो" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "📦",
+    onClick: (nav) => nav('hospitality', 'courier')
+  },
+  {
+    name: { en: "Auto Stand & Autos", te: "ఆటో స్టాండ్ & రవాణా", hi: "ऑटो स्टैंड और ऑटो" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🛺",
+    onClick: (nav) => nav('hospitality', 'auto')
+  },
+  {
+    name: { en: "Drivers & Chauffeurs", te: "డ్రైవర్లు & చౌఫర్లు", hi: "चालक और चौफ़र" },
+    category: { en: "Services Catalog", te: "సేవల కేటలాగ్", hi: "सेवा निर्देशिका" },
+    icon: "🧑‍✈️",
+    onClick: (nav) => nav('hospitality', 'drivers')
+  },
+
+  // Jobs & Labour
+  {
+    name: { en: "Job Board", te: "ఉద్యోగ బోర్డు", hi: "जॉब बोर्ड" },
+    category: { en: "Jobs & Labour", te: "ఉద్యోగాలు & కార్మికులు", hi: "नौकरियां & श्रमिक" },
+    icon: "💼",
+    onClick: (nav) => nav('jobs', 'job')
+  },
+  {
+    name: { en: "Labour Registry", te: "కార్మిక రిజిస్ట్రీ", hi: "श्रमिक पंजीकरण" },
+    category: { en: "Jobs & Labour", te: "ఉద్యోగాలు & కార్మికులు", hi: "नौकरियां & श्रमिक" },
+    icon: "👷",
+    onClick: (nav) => nav('jobs', 'labour')
+  },
+  {
+    name: { en: "Mega Industries", te: "మెగా పరిశ్రమలు", hi: "मेगा उद्योग" },
+    category: { en: "Jobs & Labour", te: "ఉద్యోగాలు & కార్మికులు", hi: "नौकरियां & श्रमिक" },
+    icon: "🏭",
+    onClick: (nav) => nav('jobs', 'industries')
+  },
+
+  // Insights
+  {
+    name: { en: "Orvakal Industrial Hub Insights", te: "ఓర్వకల్లు పారిశ్రామిక హబ్ అంతర్దృష్టులు", hi: "ओरवाकल औद्योगिक हब अंतर्दृष्टि" },
+    category: { en: "Insights", te: "అంతర్దృష్టులు", hi: "अंतर्दृष्टि" },
+    icon: "💡",
+    onClick: (nav) => nav('insights')
+  }
+];
 
 function App() {
   const { lang, setLang, t, getTxt } = useLanguage();
@@ -50,13 +352,20 @@ function App() {
 
   // Sub-tabs orchestrators
   const [directorySubTab, setDirectorySubTab] = useState<DirectorySubTab | null>(null);
-  const [farmerSubTab, setFarmerSubTab] = useState<FarmerSubTab>('feeder');
-  const [jobsCommerceSubTab, setJobsCommerceSubTab] = useState<JobsCommerceSubTab>('job');
+  const [farmerSubTab, setFarmerSubTab] = useState<FarmerSubTab | null>(null);
+  const [jobsCommerceSubTab, setJobsCommerceSubTab] = useState<JobsCommerceSubTab | null>(null);
   const [selectedServiceCategory, setSelectedServiceCategory] = useState<string | null>(null);
+
+  // Navigation source tracking (whether arrived from dashboard quick link or from tab's own menu)
+  const [directoryNavSource, setDirectoryNavSource] = useState<'dashboard' | 'menu'>('menu');
+  const [farmerNavSource, setFarmerNavSource] = useState<'dashboard' | 'menu'>('menu');
 
   // Global overlay modals
   const [sosModalOpen, setSosModalOpen] = useState(false);
   const [selectedIndustry, setSelectedIndustry] = useState<IndustrialPlant | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<RegisteredCompany | null>(null);
+  const [companiesModalOpen, setCompaniesModalOpen] = useState(false);
+  const [isAirportModalOpen, setIsAirportModalOpen] = useState(false);
 
   // Reset scroll and SOS banner visibility on tab changes
   useEffect(() => {
@@ -67,6 +376,15 @@ function App() {
     setShowSos(true);
   }, [activeTab]);
 
+  const matchedOptions = searchQuery.trim() === ''
+    ? []
+    : searchableOptions.filter(opt => {
+        const title = (opt.name[lang] || '').toLowerCase();
+        const category = (opt.category[lang] || '').toLowerCase();
+        const query = searchQuery.toLowerCase();
+        return title.includes(query) || category.includes(query);
+      });
+
   // Nav shortcuts
   const handleShortcutClick = (
     tabName: ActiveTab,
@@ -75,11 +393,21 @@ function App() {
   ) => {
     setActiveTab(tabName);
     setSearchQuery(query || '');
-    if (tabName === 'directory' && subTabName) {
-      setDirectorySubTab(subTabName as DirectorySubTab);
+    if (tabName === 'directory') {
+      if (subTabName) {
+        setDirectorySubTab(subTabName as DirectorySubTab);
+        setDirectoryNavSource('dashboard');
+      } else {
+        setDirectoryNavSource('menu');
+      }
     }
-    if (tabName === 'farmer' && subTabName) {
-      setFarmerSubTab(subTabName as FarmerSubTab);
+    if (tabName === 'farmer') {
+      setFarmerSubTab((subTabName || null) as FarmerSubTab | null);
+      if (subTabName) {
+        setFarmerNavSource('dashboard');
+      } else {
+        setFarmerNavSource('menu');
+      }
     }
     if (tabName === 'hospitality') {
       setSelectedServiceCategory(subTabName || null);
@@ -90,7 +418,7 @@ function App() {
         setSelectedServiceCategory(query || null);
         setSearchQuery('');
       } else {
-        setJobsCommerceSubTab((subTabName || 'job') as JobsCommerceSubTab);
+        setJobsCommerceSubTab((subTabName || null) as JobsCommerceSubTab | null);
       }
     }
   };
@@ -212,6 +540,32 @@ function App() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            {matchedOptions.length > 0 && (
+              <div className="search-results-dropdown">
+                {matchedOptions.map((opt, index) => (
+                  <button
+                    key={index}
+                    className="search-result-item"
+                    onClick={() => {
+                      opt.onClick(handleShortcutClick, setActiveTab);
+                      setSearchQuery('');
+                    }}
+                  >
+                    <div className="search-result-info">
+                      <span className="search-result-title">
+                        {opt.icon} {opt.name[lang]}
+                      </span>
+                      <span className="search-result-category">
+                        {opt.category[lang]}
+                      </span>
+                    </div>
+                    <span className="search-result-badge">
+                      {lang === 'en' ? 'Navigate' : lang === 'te' ? 'వెళ్లండి' : 'नेविगेट'}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </header>
 
@@ -235,7 +589,7 @@ function App() {
             <DashboardView
               onShortcutClick={handleShortcutClick}
               onSosClick={() => setSosModalOpen(true)}
-              onIndustrySelect={setSelectedIndustry}
+              onAirportClick={() => setIsAirportModalOpen(true)}
             />
           )}
 
@@ -244,6 +598,11 @@ function App() {
               searchQuery={searchQuery}
               subTab={directorySubTab}
               onSubTabChange={setDirectorySubTab}
+              navSource={directoryNavSource}
+              onClose={() => {
+                setDirectorySubTab(null);
+                handleShortcutClick('home');
+              }}
             />
           )}
 
@@ -251,6 +610,11 @@ function App() {
             <FarmerDesk
               subTab={farmerSubTab}
               onSubTabChange={setFarmerSubTab}
+              navSource={farmerNavSource}
+              onClose={() => {
+                setFarmerSubTab(null);
+                handleShortcutClick('home');
+              }}
             />
           )}
 
@@ -259,6 +623,10 @@ function App() {
               searchQuery={searchQuery}
               selectedServiceCategory={selectedServiceCategory}
               setSelectedServiceCategory={setSelectedServiceCategory}
+              onClose={() => {
+                setSelectedServiceCategory(null);
+                handleShortcutClick('home');
+              }}
             />
           )}
 
@@ -267,11 +635,20 @@ function App() {
               searchQuery={searchQuery}
               subTab={jobsCommerceSubTab}
               onSubTabChange={setJobsCommerceSubTab}
+              onClose={() => {
+                setJobsCommerceSubTab(null);
+                handleShortcutClick('home');
+              }}
             />
           )}
 
           {activeTab === 'insights' && (
-            <InsightsView onBackClick={() => setActiveTab('home')} />
+            <InsightsView 
+              onBackClick={() => setActiveTab('home')} 
+              onActiveIndustriesClick={() => setCompaniesModalOpen(true)}
+              onShortcutClick={handleShortcutClick}
+              onCompanySelect={setSelectedCompany}
+            />
           )}
         </main>
 
@@ -279,7 +656,13 @@ function App() {
         <nav className="app-nav">
           <button
             className={`nav-item ${activeTab === 'home' ? 'active' : ''}`}
-            onClick={() => setActiveTab('home')}
+            onClick={() => {
+              setActiveTab('home');
+              setDirectorySubTab(null);
+              setFarmerSubTab(null);
+              setJobsCommerceSubTab(null);
+              setSelectedServiceCategory(null);
+            }}
             aria-label="Dashboard Tab"
           >
             <LayoutDashboard className="nav-icon" />
@@ -288,7 +671,10 @@ function App() {
           
           <button
             className={`nav-item ${activeTab === 'directory' ? 'active' : ''}`}
-            onClick={() => setActiveTab('directory')}
+            onClick={() => {
+              setActiveTab('directory');
+              setDirectoryNavSource('menu');
+            }}
             aria-label="Govt & Schools Tab"
           >
             <Building2 className="nav-icon" />
@@ -297,7 +683,10 @@ function App() {
 
           <button
             className={`nav-item ${activeTab === 'farmer' ? 'active' : ''}`}
-            onClick={() => setActiveTab('farmer')}
+            onClick={() => {
+              setActiveTab('farmer');
+              setFarmerNavSource('menu');
+            }}
             aria-label="Farmer Desk Tab"
           >
             <Sprout className="nav-icon" />
@@ -383,6 +772,147 @@ function App() {
               </a>
             </div>
           )}
+        </Modal>
+
+        {/* Global Active Registered Companies Modal */}
+        <Modal
+          isOpen={companiesModalOpen}
+          onClose={() => setCompaniesModalOpen(false)}
+          title={
+            <h2 style={{ fontSize: '1.1rem', color: 'hsl(var(--primary))', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
+              🏢 {lang === 'en' ? "Active Registered Companies" : lang === 'te' ? "క్రియాశీల నమోదిత కంపెనీలు" : "सक्रिय पंजीकृत कंपनियां"}
+            </h2>
+          }
+          innerStyle={{ border: '2px solid hsl(var(--primary) / 0.3)', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '6px' }}>
+            <p style={{ fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))', margin: 0 }}>
+              {lang === 'en' 
+                ? "The following companies have formalized registrations and active setup in the Orvakal Industrial Node:"
+                : lang === 'te'
+                ? "క్రింది సంస్థలు ఓర్వకల్లు పారిశ్రామిక నోడ్‌లో అధికారిక నమోదు మరియు క్రియాశీలక ప్లాంట్లను కలిగి ఉన్నాయి:"
+                : "निम्नलिखित कंपनियों ने ओरवाकल औद्योगिक नोड में औपचारिक पंजीकरण और सक्रिय सेटअप किया है:"
+              }
+            </p>
+            {registeredCompanies.map((comp) => (
+              <div 
+                key={comp.id} 
+                style={{ 
+                  padding: '12px', 
+                  backgroundColor: 'hsl(var(--muted) / 0.35)', 
+                  borderRadius: '10px', 
+                  border: '1px solid hsl(var(--border) / 0.5)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <strong style={{ fontSize: '0.85rem', color: 'hsl(var(--primary))' }}>{getTxt(comp.name)}</strong>
+                  <span className="badge badge-success" style={{ fontSize: '0.6rem' }}>
+                    {lang === 'en' ? "Registered" : lang === 'te' ? "నమోదైంది" : "पंजीकृत"}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.68rem', color: 'hsl(var(--muted-foreground))', fontWeight: 600 }}>
+                  <span>Sector: {getTxt(comp.sector)}</span>
+                </div>
+                <div style={{ fontSize: '0.68rem', color: 'hsl(var(--muted-foreground))' }}>
+                  📍 {getTxt(comp.location)}
+                </div>
+                <p style={{ fontSize: '0.72rem', color: 'hsl(var(--foreground))', margin: '4px 0 0 0', lineHeight: 1.35 }}>
+                  {getTxt(comp.description)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </Modal>
+
+        {/* Global Registered Company Details Modal */}
+        <Modal
+          isOpen={selectedCompany !== null}
+          onClose={() => setSelectedCompany(null)}
+          title="Company Profile"
+        >
+          {selectedCompany && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <h4 style={{ fontSize: '0.9rem', margin: 0, color: 'hsl(var(--primary))', fontWeight: 800 }}>{getTxt(selectedCompany.name)}</h4>
+              <div style={{ fontSize: '0.75rem', marginTop: '4px' }}>
+                <strong>Sector:</strong> {getTxt(selectedCompany.sector)}
+              </div>
+              <div style={{ fontSize: '0.75rem' }}>
+                <strong>Location:</strong> {getTxt(selectedCompany.location)}
+              </div>
+              <div style={{ fontSize: '0.75rem', marginTop: '4px' }}>
+                <strong>About the Company:</strong>
+                <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                  {getTxt(selectedCompany.description)}
+                </p>
+              </div>
+            </div>
+          )}
+        </Modal>
+
+        {/* Global Airport KJB Flight Transit Modal */}
+        <Modal
+          isOpen={isAirportModalOpen}
+          onClose={() => setIsAirportModalOpen(false)}
+          title={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Plane size={18} style={{ color: 'hsl(var(--primary))' }} />
+              <span style={{ fontWeight: 800, fontSize: '0.92rem', fontFamily: 'var(--font-heading)' }}>
+                Uyyalawada Narasimha Reddy Airport (KJB)
+              </span>
+            </div>
+          }
+          backdropFilter={true}
+          innerStyle={{ maxWidth: '420px', maxHeight: '85%', overflowY: 'auto', padding: '16px' }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '6px' }}>
+            <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', lineHeight: 1.4, margin: 0 }}>
+              {lang === 'en' ? 'Orvakal airport connects Kurnool district directly to major cities under the UDAN regional connectivity scheme.' : 
+               lang === 'te' ? 'ఉడాన్ కనెక్టివిటీ స్కీమ్ కింద కర్నూలు జిల్లాను ప్రధాన నగరాలకు అనుసంధానించే ఓర్వకల్లు విమానాశ్రయం.' : 
+               'उड़ान योजना के तहत कर्नूल जिले को प्रमुख शहरों से जोड़ने वाला ओर्वकल हवाई अड्डा।'}
+            </p>
+
+            <div style={{ borderTop: '1px dashed hsl(var(--border))', paddingTop: '10px' }}>
+              <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'hsl(var(--primary))', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                📋 Weekly Flight Schedule
+              </span>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid hsl(var(--border) / 0.3)' }}>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>Kurnool (KJB) ➜ Bengaluru (BLR)</div>
+                    <div style={{ fontSize: '0.62rem', color: 'hsl(var(--muted-foreground))', marginTop: '2px' }}>Indigo • Daily • 02:15 PM</div>
+                  </div>
+                  <span className="badge badge-success" style={{ fontSize: '0.55rem', padding: '2px 6px', height: 'fit-content' }}>Active</span>
+                </div>
+
+                <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid hsl(var(--border) / 0.3)' }}>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>Kurnool (KJB) ➜ Hyderabad (HYD)</div>
+                    <div style={{ fontSize: '0.62rem', color: 'hsl(var(--muted-foreground))', marginTop: '2px' }}>Indigo • Daily • 10:30 AM</div>
+                  </div>
+                  <span className="badge badge-success" style={{ fontSize: '0.55rem', padding: '2px 6px', height: 'fit-content' }}>Active</span>
+                </div>
+
+                <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: 'hsl(var(--muted) / 0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid hsl(var(--border) / 0.3)' }}>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 700 }}>Kurnool (KJB) ➜ Chennai (MAA)</div>
+                    <div style={{ fontSize: '0.62rem', color: 'hsl(var(--muted-foreground))', marginTop: '2px' }}>Indigo • Tue, Thu, Sat • 04:45 PM</div>
+                  </div>
+                  <span className="badge badge-success" style={{ fontSize: '0.55rem', padding: '2px 6px', height: 'fit-content' }}>Active</span>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center', backgroundColor: 'hsl(var(--secondary) / 0.1)', padding: '8px', borderRadius: '8px', marginTop: '4px', border: '1px solid hsl(var(--secondary) / 0.15)' }}>
+              <AlertCircle size={13} style={{ color: 'hsl(var(--secondary))', flexShrink: 0 }} />
+              <span style={{ fontSize: '0.6rem', color: 'hsl(var(--muted-foreground))', fontWeight: 500 }}>
+                Note: Reach airport 90 minutes before flight departure.
+              </span>
+            </div>
+          </div>
         </Modal>
 
       </div>

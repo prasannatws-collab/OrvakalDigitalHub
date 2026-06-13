@@ -10,12 +10,14 @@ interface HospitalityCatalogProps {
   searchQuery: string;
   selectedServiceCategory: string | null;
   setSelectedServiceCategory: (cat: string | null) => void;
+  onClose?: () => void;
 }
 
 export const HospitalityCatalog = ({
   searchQuery,
   selectedServiceCategory,
-  setSelectedServiceCategory
+  setSelectedServiceCategory,
+  onClose
 }: HospitalityCatalogProps) => {
   const { t, getTxt, lang } = useLanguage();
   const {
@@ -96,24 +98,74 @@ export const HospitalityCatalog = ({
     return dict[key] || cat;
   };
 
+  const getCategoryDescription = (key: string) => {
+    const descriptions: Record<string, { en: string, te: string, hi: string }> = {
+      medical: { en: "Pharmacies, clinics, and medical stores.", te: "మందుల షాపులు మరియు క్లినిక్లు.", hi: "दवा की दुकानें और क्लीनिक।" },
+      pesticide: { en: "Fertilizers, quality seeds, and pesticides.", te: "ఎరువులు, పురుగుల మందులు మరియు విత్తనాలు.", hi: "उर्वरक, कीटनाशक और उत्तम बीज।" },
+      dairy: { en: "Fresh milk, curd, and local dairy centers.", te: "పాలు, పెరుగు మరియు స్థానిక పాల కేంద్రాలు.", hi: "ताजा दूध, दही और डेयरी उत्पाद।" },
+      'water-supplier': { en: "Purified water cans and tanker suppliers.", te: "మినరల్ వాటర్ క్యాన్లు మరియు సప్లయర్లు.", hi: "पेयजल कैन और टैंकर आपूर्ति कर्ता।" },
+      wholesaler: { en: "Wholesale groceries and general kirana.", te: "హోల్‌సేల్ కిరాణా మరియు జనరల్ స్టోర్స్.", hi: "थोक किराना और जनरल मर्चेंट।" },
+      restaurant: { en: "Local eateries, dhabas, and restaurants.", te: "స్థానిక హోటళ్ళు, ధాబాలు మరియు రెస్టారెంట్లు.", hi: "भोजन, ढाबा और स्थानीय रेस्टोरेंट।" },
+      laundry: { en: "Dry cleaning, ironing, and laundry services.", te: "లాండ్రీ, డ్రై క్లీనింగ్ మరియు ఇస్త్రీ సేవలు.", hi: "कपड़े धोने और इस्त्री की सेवाएं।" },
+      hardware: { en: "Electricals, plumbing tools, and hardware.", te: "ఎలక్ట్రికల్, ప్లంబింగ్ సామాగ్రి మరియు హార్డ్‌వేర్.", hi: "इलेक्ट्रिकल, प्लंबिंग और हार्डवेयर स्टोर।" },
+      auto: { en: "Auto stand locations and local auto drivers.", te: "ఆటో స్టాండ్లు మరియు అందుబాటులో ఉన్న ఆటోలు.", hi: "स्थानीय ऑटो स्टैंड और चालक संपर्क।" },
+      drivers: { en: "Professional drivers for hire and travel.", te: "కార్ డ్రైవర్లు మరియు ఇతర వాహన చోదకులు.", hi: "यात्रा और किराए के लिए पेशेवर चालक।" },
+      'car-rental': { en: "Rental cars, taxi services, and travel desks.", te: "క్యాబ్స్, ట్రావెల్స్ మరియు వాహనాల అద్దెలు.", hi: "किराए की कार और टैक्सी सेवाएं।" },
+      courier: { en: "Parcel delivery, cargo, and speed post.", te: "కొరియర్, పార్సెల్ సర్వీస్ మరియు స్పీడ్ పోస్ట్.", hi: "पार्सल डिलीवरी, कूरियर और स्पीड पोस्ट।" },
+      stationery: { en: "Notebooks, printing, Xerox, and books.", te: "స్టేషనరీ, జిరాక్స్ మరియు పుస్తకాల దుకాణాలు.", hi: "स्टेशनरी, फोटोकॉपी और किताबों की दुकानें।" },
+      tuitions: { en: "School tuitions and competitive coaching.", te: "ట్యూషన్లు మరియు వివిధ కోచింగ్ సెంటర్లు.", hi: "स्कूली ट्यूशन और प्रतियोगी कोचिंग।" },
+      'driving-school': { en: "Learn car and bike driving with license help.", te: "డ్రైవింగ్ స్కూల్స్ మరియు లైసెన్స్ సహాయం.", hi: "कार और बाइक ड्राइविंग ट्रेनिंग।" },
+      rentals: { en: "House renting, rooms, and PG accommodation.", te: "ఇల్లు, సింగిల్ రూమ్స్ మరియు పీజీ అద్దెలు.", hi: "किराए के मकान, कमरे और पीजी आवास।" },
+      boutique: { en: "Boutique designs, tailor shops, and styling.", te: "బోటిక్స్ మరియు లేడీస్ టైలరింగ్ షాపులు.", hi: "फैंसी बुटीक और लेडीज टेलरिंग।" },
+      clothing: { en: "Apparel shopping and readymade clothing.", te: "బట్టల దుకాణాలు మరియు రెడీమేడ్ దుస్తులు.", hi: "कपड़े और रेडीमेड कपड़ों के शो-रूम।" },
+      'event-rental': { en: "Tent house, sound systems, and lighting.", te: "టెంట్ హౌస్, మైక్ సెట్లు మరియు డెకరేషన్ సప్లైస్.", hi: "तंबू, लाउडस्पीकर और लाइटिंग उपकरण।" },
+      banquet: { en: "Marriage halls, function halls, and gardens.", te: "ఫంక్షన్ హాళ్ళు మరియు వివాహ వేదికలు.", hi: "विवाह भवन, उत्सव हॉल और गार्डन।" },
+      hotel: { en: "Lodges, guest houses, and hotels.", te: "వసతి గృహాలు, లాడ్జీలు మరియు హోటళ్ళు.", hi: "लॉज, गेस्ट हाउस और होटल ठहरने की जगह।" },
+      temple: { en: "Historical and local temples to visit.", te: "స్థానిక మరియు చారిత్రక దేవాలయాలు.", hi: "दर्शन के लिए स्थानीय और ऐतिहासिक मंदिर।" },
+      mosque: { en: "Local mosques and prayer timings.", te: "స్థానిక మసీదులు మరియు ప్రార్థన సమయాలు.", hi: "स्थानीय मस्जिदें और नमाज़ का समय।" },
+      church: { en: "Local churches and Sunday services.", te: "స్థానిక చర్చీలు మరియు ఆదివారం ప్రార్థనలు.", hi: "स्थानीय चर्च और रविवार प्रार्थना सभा।" }
+    };
+    const desc = descriptions[key] || { en: "Browse details and contacts.", te: "వివరాలు మరియు కాంటాక్ట్స్ చూడండి.", hi: "विवरण और संपर्क देखें।" };
+    return desc[lang] || desc['en'];
+  };
+
   if (selectedServiceCategory === null) {
     return (
-      <div className="fade-in">
-        <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))' }}>
+      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', borderBottom: '1px solid hsl(var(--border) / 0.5)', paddingBottom: '8px' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>
+            🛍️ {lang === 'en' ? "Services Catalog" : lang === 'te' ? "సేవల కేటలాగ్" : "सेवा सूची"}
+          </span>
+          {onClose && (
+            <button
+              className="btn btn-secondary"
+              style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid hsl(var(--primary) / 0.2)' }}
+              onClick={onClose}
+            >
+              🏠 {lang === 'en' ? "Go to Dashboard" : lang === 'te' ? "డాష్‌బోర్డ్‌కు వెళ్ళు" : "डैशबोर्ड पर जाएं"}
+            </button>
+          )}
+        </div>
+        <div className="card" style={{ borderLeft: '4px solid hsl(var(--primary))', marginBottom: '4px' }}>
           <h4 style={{ fontSize: '0.85rem' }}>{t.servicesTitle}</h4>
           <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>{t.servicesPrompt}</p>
         </div>
-        <div className="services-menu-grid">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px', marginTop: '4px' }}>
           {serviceCategories.map((cat) => {
             const catStyle = categoryStyles[cat.key] || { bg: 'hsl(var(--accent))', color: 'hsl(var(--primary))' };
             return (
-              <div key={cat.key} className="services-menu-card" onClick={() => setSelectedServiceCategory(cat.key)}>
-                <div className="services-menu-icon" style={{ background: catStyle.bg, color: catStyle.color }}>
+              <div key={cat.key} className="govt-menu-card" onClick={() => setSelectedServiceCategory(cat.key)}>
+                <div className="govt-menu-icon" style={{ background: catStyle.bg, color: catStyle.color }}>
                   {cat.icon}
                 </div>
-                <span className="services-menu-label">
-                  {(t as any)[cat.labelKey] || cat.key}
-                </span>
+                <div className="govt-menu-info">
+                  <span className="govt-menu-title">
+                    {(t as any)[cat.labelKey] || cat.key}
+                  </span>
+                  <span className="govt-menu-desc">
+                    {getCategoryDescription(cat.key)}
+                  </span>
+                </div>
               </div>
             );
           })}
@@ -140,13 +192,24 @@ export const HospitalityCatalog = ({
 
   return (
     <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button className="btn btn-secondary" style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem' }} onClick={() => setSelectedServiceCategory(null)}>
-          ⬅️ {t.backToMenu}
-        </button>
-        {showRentals && (
-          <button className="btn btn-primary" style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem' }} onClick={() => setRentalFormOpen(!rentalFormOpen)}>
-            <Plus size={10} /> {t.addRental}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button className="btn btn-secondary" style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem' }} onClick={() => setSelectedServiceCategory(null)}>
+            ⬅️ {t.backToMenu}
+          </button>
+          {showRentals && (
+            <button className="btn btn-primary" style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem' }} onClick={() => setRentalFormOpen(!rentalFormOpen)}>
+              <Plus size={10} /> {t.addRental}
+            </button>
+          )}
+        </div>
+        {onClose && (
+          <button
+            className="btn btn-secondary"
+            style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid hsl(var(--primary) / 0.2)' }}
+            onClick={onClose}
+          >
+            🏠 {lang === 'en' ? "Go to Dashboard" : lang === 'te' ? "డాష్‌బోర్డ్‌కు వెళ్ళు" : "डैशबोर्ड पर जाएं"}
           </button>
         )}
       </div>

@@ -36,7 +36,7 @@ export const PersonaSelector = ({ onShortcutClick, onSosClick, onTransportScroll
       <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', margin: 0 }}>{t.personaPrompt}</p>
       
       {/* Persona choice buttons */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', padding: '4px 0', marginTop: '8px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', padding: '2px 0', marginTop: '4px' }}>
         <button className={`tab-pill ${activePersona === 'farmer' ? 'active' : ''}`} onClick={() => togglePersona('farmer')}>
           🌾 {t.farmer}
         </button>
@@ -180,23 +180,55 @@ export const PersonaSelector = ({ onShortcutClick, onSosClick, onTransportScroll
       )}
 
       {/* Static Quick Cards Grid */}
-      <div style={{ marginTop: '16px', borderTop: '1px dashed hsl(var(--border) / 0.5)', paddingTop: '16px' }}>
+      <div style={{ marginTop: '6px', borderTop: '1px dashed hsl(var(--border) / 0.5)', paddingTop: '10px' }}>
         <div className="quick-menu-grid">
           <div className="quick-card quick-card-red" onClick={onSosClick}>
             <div className="quick-card-icon-container">🚨</div>
-            <span className="quick-card-label">Emergency</span>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Emergency' : lang === 'te' ? 'అత్యవసరం' : 'आपातकालीन'}
+            </span>
           </div>
           <div className="quick-card quick-card-blue" onClick={onTransportScroll}>
             <div className="quick-card-icon-container">🚌</div>
-            <span className="quick-card-label">Transport</span>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Transport' : lang === 'te' ? 'రవాణా' : 'परिवहन'}
+            </span>
           </div>
           <div className="quick-card quick-card-green" onClick={() => onShortcutClick('hospitality', 'hotel')}>
             <div className="quick-card-icon-container">🏨</div>
-            <span className="quick-card-label">Hotel Stays</span>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Hotel Stays' : lang === 'te' ? 'వసతి గృహాలు' : 'होटल और लॉज'}
+            </span>
           </div>
           <div className="quick-card quick-card-purple" onClick={() => onShortcutClick('directory', 'committees')}>
             <div className="quick-card-icon-container">👥</div>
-            <span className="quick-card-label">Committees</span>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Village Committees' : lang === 'te' ? 'గ్రామ కమిటీలు' : 'ग्राम समितियां'}
+            </span>
+          </div>
+          <div className="quick-card quick-card-orange" onClick={() => onShortcutClick('jobs', 'job')}>
+            <div className="quick-card-icon-container">💼</div>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Search Jobs' : lang === 'te' ? 'ఉద్యోగ శోధన' : 'नौकरियां खोजें'}
+            </span>
+          </div>
+          <div className="quick-card quick-card-teal" onClick={() => onShortcutClick('farmer', 'mandi')}>
+            <div className="quick-card-icon-container">🌾</div>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Mandi Rates' : lang === 'te' ? 'మార్కెట్ ధరలు' : 'मंडी दरें'}
+            </span>
+          </div>
+          <div className="quick-card quick-card-pink" onClick={() => onShortcutClick('directory', 'schemes')}>
+            <div className="quick-card-icon-container">📜</div>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Govt Schemes' : lang === 'te' ? 'ప్రభుత్వ పథకాలు' : 'सरकारी योजनाएं'}
+            </span>
+          </div>
+          <div className="quick-card quick-card-indigo" onClick={() => onShortcutClick('directory', 'govt')}>
+            <div className="quick-card-icon-container">🏛️</div>
+            <span className="quick-card-label">
+              {lang === 'en' ? 'Govt Offices' : lang === 'te' ? 'ప్రభుత్వాలు' : 'सरकारी कार्यालय'}
+            </span>
           </div>
         </div>
       </div>

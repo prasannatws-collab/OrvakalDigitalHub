@@ -6,19 +6,22 @@ import { useLabour } from '../hooks/useLabour';
 import { industries } from '../data/jobsData';
 import { Modal } from '../../../core/components/Modal';
 import type { JobPost, IndustrialPlant } from '../../../types';
+import { registeredCompanies } from '../../../data/registeredCompanies';
 
 interface JobsCommerceProps {
   searchQuery: string;
-  subTab: 'job' | 'labour' | 'industries';
-  onSubTabChange: (subTab: 'job' | 'labour' | 'industries') => void;
+  subTab: 'job' | 'labour' | 'industries' | null;
+  onSubTabChange: (subTab: 'job' | 'labour' | 'industries' | null) => void;
+  onClose?: () => void;
 }
 
 export const JobsCommerce = ({
   searchQuery,
   subTab,
-  onSubTabChange
+  onSubTabChange,
+  onClose
 }: JobsCommerceProps) => {
-  const { t, getTxt } = useLanguage();
+  const { t, getTxt, lang } = useLanguage();
   const {
     localJobs,
     jobFormOpen,
@@ -71,8 +74,102 @@ export const JobsCommerce = ({
     );
   });
 
+  if (subTab === null) {
+    return (
+      <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px', borderBottom: '1px solid hsl(var(--border) / 0.5)', paddingBottom: '8px' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'hsl(var(--primary))' }}>
+            💼 {lang === 'en' ? "Jobs & Labour" : lang === 'te' ? "ఉద్యోగాలు & కార్మికులు" : "नौकरियां और श्रमिक"}
+          </span>
+          {onClose && (
+            <button
+              className="btn btn-secondary"
+              style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid hsl(var(--primary) / 0.2)' }}
+              onClick={onClose}
+            >
+              🏠 {lang === 'en' ? "Go to Dashboard" : lang === 'te' ? "డాష్‌బోర్డ్‌కు వెళ్ళు" : "डैशबोर्ड पर जाएं"}
+            </button>
+          )}
+        </div>
+
+        <div className="govt-menu-container">
+          {/* 1. Job Board */}
+          <div className="govt-menu-card" onClick={() => onSubTabChange('job')}>
+            <div className="govt-menu-icon">💼</div>
+            <div className="govt-menu-info">
+              <span className="govt-menu-title">
+                {lang === 'en' ? "Job Board" : lang === 'te' ? "ఉద్యోగ బోర్డు" : "जॉब बोर्ड"}
+              </span>
+              <span className="govt-menu-desc">
+                {lang === 'en'
+                  ? "Browse local employment, industrial hiring, and contract work opportunities."
+                  : lang === 'te'
+                  ? "స్థానిక పరిశ్రమలు మరియు కాంట్రాక్ట్ ఉద్యోగాల సమాచారం."
+                  : "स्थानीय रोजगार, औद्योगिक भर्ती और अनुबंध कार्यों की जानकारी।"}
+              </span>
+            </div>
+          </div>
+
+          {/* 2. Labour Registry */}
+          <div className="govt-menu-card" onClick={() => onSubTabChange('labour')}>
+            <div className="govt-menu-icon">🛠️</div>
+            <div className="govt-menu-info">
+              <span className="govt-menu-title">
+                {lang === 'en' ? "Labour Registry" : lang === 'te' ? "కార్మిక రిజిస్ట్రీ" : "श्रमिक पंजीकरण"}
+              </span>
+              <span className="govt-menu-desc">
+                {lang === 'en'
+                  ? "Contact verified local skilled workers and daily wage laborers."
+                  : lang === 'te'
+                  ? "స్థానిక నైపుణ్యం కలిగిన కార్మికులు మరియు రోజువారీ కూలీల సమాచారం."
+                  : "सत्यापित स्थानीय कुशल श्रमिकों और दैनिक वेतन भोगी मजदूरों से संपर्क करें।"}
+              </span>
+            </div>
+          </div>
+
+          {/* 3. Mega Industries */}
+          <div className="govt-menu-card" onClick={() => onSubTabChange('industries')}>
+            <div className="govt-menu-icon">🏭</div>
+            <div className="govt-menu-info">
+              <span className="govt-menu-title">
+                {lang === 'en' ? "Mega Industries" : lang === 'te' ? "మెగా పరిశ్రమలు" : "मेगा उद्योग"}
+              </span>
+              <span className="govt-menu-desc">
+                {lang === 'en'
+                  ? "Information on mega factories, active companies, and HR contacts in Orvakal."
+                  : lang === 'te'
+                  ? "ఓర్వకల్లు పారిశ్రామిక నోడ్‌లో ఉన్న కర్మాగారాలు మరియు కంపెనీల వివరాలు."
+                  : "ओरवाकल में बड़े कारखानों, सक्रिय कंपनियों और उनके एचआर संपर्क सूत्रों की जानकारी।"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      
+      {/* Subtab Header Bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+        <button
+          className="btn btn-secondary"
+          style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem' }}
+          onClick={() => onSubTabChange(null)}
+        >
+          ⬅️ {lang === 'en' ? "Back to Jobs & Labour" : lang === 'te' ? "తిరిగి ఉద్యోగాలు & కార్మికుల మెనూకు" : "नौकरियां और श्रमिक पर वापस जाएं"}
+        </button>
+        {onClose && (
+          <button
+            className="btn btn-secondary"
+            style={{ flex: 'none', padding: '6px 12px', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid hsl(var(--primary) / 0.2)' }}
+            onClick={onClose}
+          >
+            🏠 {lang === 'en' ? "Go to Dashboard" : lang === 'te' ? "డాష్‌బోర్డ్‌కు వెళ్ళు" : "डैशबोर्ड पर जाएं"}
+          </button>
+        )}
+      </div>
       
       {/* Jobs and Commerce Subtabs */}
       <div className="tabs-header">
@@ -347,47 +444,79 @@ export const JobsCommerce = ({
 
       {/* Sub-tab C: Mega Industries */}
       {subTab === 'industries' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          <h4 style={{ fontSize: '0.8rem', color: 'hsl(var(--primary))', margin: 0 }}>Active Mega Industries</h4>
-          {filteredIndustries.length === 0 ? (
-            <div className="card" style={{ padding: '16px', textAlign: 'center' }}>
-              <p style={{ fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))', margin: 0 }}>{t.noItems || "No industries found matching your query."}</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <h4 style={{ fontSize: '0.8rem', color: 'hsl(var(--primary))', margin: 0, fontWeight: 800 }}>
+              🏢 Active Registered Companies
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {registeredCompanies.map(comp => (
+                <div key={comp.id} className="card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <h4 style={{ fontSize: '0.85rem', color: 'hsl(var(--primary))', margin: 0, fontWeight: 700 }}>{getTxt(comp.name)}</h4>
+                    <span className="badge badge-success" style={{ fontSize: '0.6rem' }}>
+                      Registered
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                    <strong>Sector:</strong> {getTxt(comp.sector)}
+                  </div>
+                  <div style={{ display: 'flex', gap: '4px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', alignItems: 'center' }}>
+                    <MapPin size={12} /> <span>{getTxt(comp.location)}</span>
+                  </div>
+                  <p style={{ fontSize: '0.72rem', color: 'hsl(var(--muted-foreground))', margin: '4px 0 0 0', lineHeight: 1.35 }}>
+                    {getTxt(comp.description)}
+                  </p>
+                </div>
+              ))}
             </div>
-          ) : (
-            filteredIndustries.map(ind => (
-              <div key={ind.id} className="card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <h4 style={{ fontSize: '0.85rem', color: 'hsl(var(--primary))', margin: 0 }}>{getTxt(ind.name)}</h4>
-                  <span className="badge badge-success" style={{ fontSize: '0.6rem' }}>
-                    {getTxt(ind.status).split(' ')[0]}
-                  </span>
-                </div>
-                <div style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
-                  <strong>Sector:</strong> {getTxt(ind.sector)}
-                </div>
-                <div style={{ display: 'flex', gap: '4px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', alignItems: 'center' }}>
-                  <MapPin size={12} /> <span>{getTxt(ind.location)}</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid hsl(var(--border) / 0.5)', paddingTop: '8px', marginTop: '4px' }}>
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <a
-                      href={`tel:${ind.hrContact}`}
-                      style={{ color: 'white', backgroundColor: 'hsl(var(--primary))', padding: '4px 8px', borderRadius: '4px', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                    >
-                      <Phone size={10} /> Call HR
-                    </a>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ padding: '4px 8px', fontSize: '0.65rem' }}
-                      onClick={() => setSelectedIndustry(ind)}
-                    >
-                      Details
-                    </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid hsl(var(--border) / 0.5)', paddingTop: '16px' }}>
+            <h4 style={{ fontSize: '0.8rem', color: 'hsl(var(--primary))', margin: 0, fontWeight: 800 }}>
+              🏭 Operational Industrial Plants
+            </h4>
+            {filteredIndustries.length === 0 ? (
+              <div className="card" style={{ padding: '16px', textAlign: 'center' }}>
+                <p style={{ fontSize: '0.75rem', color: 'hsl(var(--muted-foreground))', margin: 0 }}>{t.noItems || "No industries found matching your query."}</p>
+              </div>
+            ) : (
+              filteredIndustries.map(ind => (
+                <div key={ind.id} className="card" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <h4 style={{ fontSize: '0.85rem', color: 'hsl(var(--primary))', margin: 0 }}>{getTxt(ind.name)}</h4>
+                    <span className="badge badge-success" style={{ fontSize: '0.6rem' }}>
+                      {getTxt(ind.status).split(' ')[0]}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))' }}>
+                    <strong>Sector:</strong> {getTxt(ind.sector)}
+                  </div>
+                  <div style={{ display: 'flex', gap: '4px', fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', alignItems: 'center' }}>
+                    <MapPin size={12} /> <span>{getTxt(ind.location)}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', borderTop: '1px solid hsl(var(--border) / 0.5)', paddingTop: '8px', marginTop: '4px' }}>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <a
+                        href={`tel:${ind.hrContact}`}
+                        style={{ color: 'white', backgroundColor: 'hsl(var(--primary))', padding: '4px 8px', borderRadius: '4px', textDecoration: 'none', fontSize: '0.65rem', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                      >
+                        <Phone size={10} /> Call HR
+                      </a>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ padding: '4px 8px', fontSize: '0.65rem' }}
+                        onClick={() => setSelectedIndustry(ind)}
+                      >
+                        Details
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))
+            )}
+          </div>
         </div>
       )}
 
