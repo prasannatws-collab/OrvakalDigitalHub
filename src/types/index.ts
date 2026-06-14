@@ -246,7 +246,7 @@ export interface WorshipPlace {
   name: LocalizedText;
   type: 'temple' | 'mosque' | 'church';
   location: LocalizedText;
-  details: LocalizedText;
+  details?: LocalizedText;
 }
 
 export interface Attraction {
@@ -302,7 +302,7 @@ export interface VegMandiRate {
 
 export interface CommercialShop {
   id: string;
-  category: 'restaurant' | 'hotel' | 'rentals' | 'banquet' | 'tuitions' | 'boutique' | 'clothing' | 'wholesaler' | 'hardware' | 'stationery' | 'event-rental' | 'car-rental' | 'driving-school' | 'medical' | 'dairy' | 'water-supplier' | 'laundry' | 'pesticide' | 'courier' | 'auto' | 'drivers';
+  category: 'restaurant' | 'hotel' | 'rentals' | 'banquet' | 'tuitions' | 'boutique' | 'clothing' | 'wholesaler' | 'hardware' | 'stationery' | 'event-rental' | 'car-rental' | 'driving-school' | 'medical' | 'dairy' | 'water-supplier' | 'laundry' | 'pesticide' | 'courier' | 'auto' | 'drivers' | 'veterinary' | 'market' | 'internet-tv' | 'decors';
   name: LocalizedText;
   owner: LocalizedText;
   phone: string;

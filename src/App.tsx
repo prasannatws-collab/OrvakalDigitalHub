@@ -376,6 +376,30 @@ function App() {
     setShowSos(true);
   }, [activeTab]);
 
+  // Sync tab state from the URL path on initial mount
+  useEffect(() => {
+    const path = window.location.pathname.replace(/^\/|\/$/g, '');
+    if (path === 'directory') {
+      setActiveTab('directory');
+    } else if (path === 'farmer') {
+      setActiveTab('farmer');
+    } else if (path === 'services' || path === 'hospitality') {
+      setActiveTab('hospitality');
+    } else if (path === 'jobs') {
+      setActiveTab('jobs');
+    } else if (path === 'insights') {
+      setActiveTab('insights');
+    }
+  }, []);
+
+  // Update URL path whenever the active tab changes to keep the address bar in sync
+  useEffect(() => {
+    const path = activeTab === 'home' ? '/' : `/${activeTab === 'hospitality' ? 'services' : activeTab}`;
+    if (window.location.pathname !== path) {
+      window.history.replaceState({}, '', path);
+    }
+  }, [activeTab]);
+
   const matchedOptions = searchQuery.trim() === ''
     ? []
     : searchableOptions.filter(opt => {

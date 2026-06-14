@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Language } from '../../types';
-import { translations } from '../../data/mockData';
+import { translations } from '../../data/translations';
 
 interface LanguageContextProps {
   lang: Language;

@@ -802,47 +802,6 @@ export const schools: SchoolTeacher[] = [
       { en: "Clean Drinking Water Reverse Osmosis Plant", te: "మినరల్ వాటర్ ప్లాంట్ సదుపాయం", hi: "शुद्ध पेयजल आरओ प्लांट" }
     ],
     establishedYear: "1985"
-  },
-  {
-    id: "sch-4",
-    name: {
-      en: "Sri Saraswathi Shishu Mandir",
-      te: "శ్రీ సరస్వతి శిశు మందిర్",
-      hi: "श्री सरस्वती शिशु मंदिर"
-    },
-    schoolName: {
-      en: "Saraswathi Vidya Mandir, Orvakal",
-      te: "సరస్వతి విద్యా మందిర్, ఓర్వకల్లు",
-      hi: "सरस्वती विद्या मंदिर, ओरवाकल"
-    },
-    subject: {
-      en: "English Medium with Sanskrit & Value Education (Grades Nursery-10)",
-      te: "ఇంగ్లీష్ మీడియం మరియు సంస్కృతం (నర్సరీ-10 తరగతులు)",
-      hi: "अंग्रेजी माध्यम, संस्कृत और नैतिक शिक्षा (नर्सरी-10)"
-    },
-    phone: "+91 9908812345",
-    type: "school",
-    address: {
-      en: "Chowdeswari Temple Lane, Orvakal",
-      te: "చౌడేశ్వరి ఆలయ వీధి, ఓర్వకల్లు",
-      hi: "चौडेश्वरी मंदिर गली, ओरवाकल"
-    },
-    principal: {
-      en: "Mr. P. Srinivasa Rao, M.Sc., B.Ed.",
-      te: "శ్రీ పి. శ్రీనివాసరావు, M.Sc., B.Ed.",
-      hi: "श्री पी. श्रीनिवास राव, एम.एससी., बी.एड."
-    },
-    timings: {
-      en: "08:30 AM - 04:00 PM (Monday - Saturday)",
-      te: "ఉదయం 08:30 - సాయంత్రం 04:00 (సోమ - శని)",
-      hi: "सुबह 08:30 - शाम 04:00 (सोमवार - शनिवार)"
-    },
-    facilities: [
-      { en: "Yoga & Meditation Hall", te: "యోగా & ధ్యాన మందిరం", hi: "योग और ध्यान कक्ष" },
-      { en: "Basics Computer Training Lab", te: "కంప్యూటర్ శిక్షణ ల్యాబ్", hi: "बुनियादी कंप्यूटर प्रशिक्षण लैब" },
-      { en: "Cultural Activities & Library", te: "సాంస్కృతిక కార్యక్రమాలు & లైబ్రరీ", hi: "सांस्कृतिक गतिविधियां और पुस्तकालय" }
-    ],
-    establishedYear: "1995"
   }
 ];
 

@@ -62,7 +62,11 @@ export const HospitalityCatalog = ({
     { key: 'hotel', labelKey: 'cat_hotel', icon: <Compass size={20} /> },
     { key: 'temple', labelKey: 'cat_temple', icon: <span style={{ fontSize: '1.25rem' }}>🛕</span> },
     { key: 'mosque', labelKey: 'cat_mosque', icon: <span style={{ fontSize: '1.25rem' }}>🕌</span> },
-    { key: 'church', labelKey: 'cat_church', icon: <span style={{ fontSize: '1.25rem' }}>⛪</span> }
+    { key: 'church', labelKey: 'cat_church', icon: <span style={{ fontSize: '1.25rem' }}>⛪</span> },
+    { key: 'veterinary', labelKey: 'cat_veterinary', icon: <span style={{ fontSize: '1.25rem' }}>🐾</span> },
+    { key: 'market', labelKey: 'cat_market', icon: <span style={{ fontSize: '1.25rem' }}>🛒</span> },
+    { key: 'internet-tv', labelKey: 'cat_internet_tv', icon: <span style={{ fontSize: '1.25rem' }}>📺</span> },
+    { key: 'decors', labelKey: 'cat_decors', icon: <span style={{ fontSize: '1.25rem' }}>🎈</span> }
   ];
 
   const categoryStyles: Record<string, { bg: string, color: string }> = {
@@ -89,7 +93,11 @@ export const HospitalityCatalog = ({
     hotel: { bg: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', color: '#166534' },
     temple: { bg: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)', color: '#ea580c' },
     mosque: { bg: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', color: '#166534' },
-    church: { bg: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', color: '#2563eb' }
+    church: { bg: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', color: '#2563eb' },
+    veterinary: { bg: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)', color: '#b45309' },
+    market: { bg: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)', color: '#16a34a' },
+    'internet-tv': { bg: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)', color: '#0284c7' },
+    decors: { bg: 'linear-gradient(135deg, #fae8ff 0%, #f5d0fe 100%)', color: '#c084fc' }
   };
 
   const getShopCategoryName = (cat: string) => {
@@ -123,7 +131,11 @@ export const HospitalityCatalog = ({
       hotel: { en: "Lodges, guest houses, and hotels.", te: "వసతి గృహాలు, లాడ్జీలు మరియు హోటళ్ళు.", hi: "लॉज, गेस्ट हाउस और होटल ठहरने की जगह।" },
       temple: { en: "Historical and local temples to visit.", te: "స్థానిక మరియు చారిత్రక దేవాలయాలు.", hi: "दर्शन के लिए स्थानीय और ऐतिहासिक मंदिर।" },
       mosque: { en: "Local mosques and prayer timings.", te: "స్థానిక మసీదులు మరియు ప్రార్థన సమయాలు.", hi: "स्थानीय मस्जिदें और नमाज़ का समय।" },
-      church: { en: "Local churches and Sunday services.", te: "స్థానిక చర్చీలు మరియు ఆదివారం ప్రార్థనలు.", hi: "स्थानीय चर्च और रविवार प्रार्थना सभा।" }
+      church: { en: "Local churches and Sunday services.", te: "స్థానిక చర్చీలు మరియు ఆదివారం ప్రార్థనలు.", hi: "स्थानीय चर्च और रविवार प्रार्थना सभा।" },
+      veterinary: { en: "Veterinary dispensaries and animal clinics.", te: "పశువుల మందుల షాపులు మరియు క్లినిక్లు.", hi: "पशु चिकित्सालय और पशु क्लीनिक।" },
+      market: { en: "Local vegetable and crop wholesale markets.", te: "స్థానిక కూరగాయల మరియు పంటల మార్కెట్లు.", hi: "स्थानीय सब्जी और फसल थोक बाजार।" },
+      'internet-tv': { en: "Cable TV, broadband, and network services.", te: "కేబుల్ టీవీ, బ్రాడ్‌బ్యాండ్ మరియు నెట్‌వర్క్ సేవలు.", hi: "केबल टीवी, ब्रॉडबैंड और नेटवर्क सेवाएं।" },
+      decors: { en: "Flower, balloon, and wedding decoration services.", te: "పువ్వులు, బెలూన్లు మరియు వివాహ డెకరేషన్ సేవలు.", hi: "फूल, गुब्बारे और शादी की सजावट सेवाएं।" }
     };
     const desc = descriptions[key] || { en: "Browse details and contacts.", te: "వివరాలు మరియు కాంటాక్ట్స్ చూడండి.", hi: "विवरण और संपर्क देखें।" };
     return desc[lang] || desc['en'];
@@ -329,9 +341,11 @@ export const HospitalityCatalog = ({
                   )}
 
                   <div className="action-bar">
-                    <a href={`tel:${shop.phone}`} className="btn btn-primary" style={{ textDecoration: 'none' }}>
-                      <Phone size={10} /> {t.callNow}
-                    </a>
+                    {shop.phone && (
+                      <a href={`tel:${shop.phone}`} className="btn btn-primary" style={{ textDecoration: 'none' }}>
+                        <Phone size={10} /> {t.callNow}
+                      </a>
+                    )}
                     <button className="btn btn-secondary" onClick={() => setSelectedShop(shop)}>
                       {t.viewDetails}
                     </button>
@@ -398,9 +412,11 @@ export const HospitalityCatalog = ({
                 <p style={{ fontSize: '0.7rem', color: 'hsl(var(--muted-foreground))', marginTop: '2px' }}>{getTxt(selectedShop.details)}</p>
               </div>
             )}
-            <a href={`tel:${selectedShop.phone}`} className="btn btn-primary" style={{ textDecoration: 'none', marginTop: '10px', display: 'block', textAlign: 'center' }}>
-              <Phone size={12} /> {t.callNow}
-            </a>
+            {selectedShop.phone && (
+              <a href={`tel:${selectedShop.phone}`} className="btn btn-primary" style={{ textDecoration: 'none', marginTop: '10px', display: 'block', textAlign: 'center' }}>
+                <Phone size={12} /> {t.callNow}
+              </a>
+            )}
           </div>
         )}
       </Modal>

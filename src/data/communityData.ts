@@ -1,78 +1,128 @@
 import type { WorshipPlace, Attraction, RentalCar, Notice, NewsItem, Committee } from '../types';
 
 export const worshipPlaces: WorshipPlace[] = [
+  // 1. Temples
   {
-    id: "wrp-1",
-    name: { en: "Sri Chowdeswari Devi Temple", te: "శ్రీ చౌడేశ్వరి దేవి ఆలయం", hi: "श्री चौडेश्वरी देवी मंदिर" },
+    id: "wrp-t1",
+    name: { en: "Sri Chennakesava Swamy & Sri Rama Swamy Temple", te: "శ్రీ చెన్నకేశవ స్వామి & శ్రీ రామ స్వామి దేవాలయం", hi: "श्री चेन्नाकेशव स्वामी और श्री राम स्वामी मंदिर" },
     type: "temple",
-    location: { en: "Old Village center, Orvakal", te: "పాత ఊరి మధ్యలో, ఓర్వకల్లు", hi: "पुराना गाँव केंद्र, ओरवाकल" },
-    details: {
-      en: "Ancient and historic temple in Orvakal. Daily Pujas from 6 AM - 11 AM and 5 PM - 8 PM.",
-      te: "ఓర్వకల్లులోని పురాతన చారిత్రక ఆలయం. రోజూ పూజలు ఉదయం 6-11, సాయంత్రం 5-8 వరకు ఉంటాయి.",
-      hi: "ओरवाकल का प्राचीन और ऐतिहासिक मंदिर। दैनिक पूजा सुबह 6 बजे से 11 बजे और शाम 5 बजे से रात 8 बजे तक।"
-    }
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Daily Pujas from 6:30 AM - 11:00 AM & 04:30 PM - 08:00 PM.", te: "ప్రతిరోజూ ఉదయం 6:30 - 11:00 మరియు సాయంత్రం 04:30 - రాత్రి 08:00 వరకు పూజలు జరుగును.", hi: "दैनिक पूजा सुबह 6:30 - 11:00 और शाम 04:30 - रात 08:00 बजे।" }
   },
   {
-    id: "wrp-2",
-    name: { en: "Orvakal Jamia Masjid (Mosque)", te: "ఓర్వకల్లు జామియా మసీదు", hi: "ओरवाकल जामिया मस्जिद" },
+    id: "wrp-t2",
+    name: { en: "Sri Anjaneya Swamy Temple", te: "శ్రీ ఆంజనేయ స్వామి దేవాలయం", hi: "श्री आंजनेय स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Daily Pujas from 6:30 AM - 11:00 AM & 04:30 PM - 08:00 PM.", te: "ప్రతిరోజూ ఉదయం 6:30 - 11:00 మరియు సాయంత్రం 04:30 - రాత్రి 08:00 వరకు పూజలు జరుగును.", hi: "दैनिक पूजा सुबह 6:30 - 11:00 और शाम 04:30 - रात 08:00 बजे।" }
+  },
+  {
+    id: "wrp-t3",
+    name: { en: "Sri Jeeveswara Swamy Temple", te: "శ్రీ జీవేశ్వర స్వామి దేవాలయం", hi: "श्री जीवेश्वर स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "Orvakal, Kurnool, Andhra Pradesh 518010", te: "ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Local historic temple in Orvakal village.", te: "ఓర్వకల్లు గ్రామంలోని స్థానిక చారిత్రక దేవాలయం.", hi: "ओरवाकल गाँव में स्थानीय ऐतिहासिक मंदिर।" }
+  },
+  {
+    id: "wrp-t4",
+    name: { en: "Sri Nageswara Swamy temple", te: "శ్రీ నాగేశ్వర స్వామి దేవాలయం", hi: "श्री नागेश्वर स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Important local shrine dedicated to Lord Shiva.", te: "మహాశివుడి స్థానిక ఆలయం.", hi: "भगवान शिव को समर्पित महत्वपूर्ण स्थानीय मंदिर।" }
+  },
+  {
+    id: "wrp-t5",
+    name: { en: "Sunkulamma Temple", te: "సుంకులమ్మ దేవాలయం", hi: "सुंकुलम्मा मंदिर" },
+    type: "temple",
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Ancient village deity temple, highly revered during local festivals.", te: "గ్రామ దేవత సుంకులమ్మ ఆలయం, పండుగలలో విశేష పూజలు జరుగును.", hi: "प्राचीन ग्राम देवी मंदिर, स्थानीय त्योहारों के दौरान अत्यधिक पूजनीय।" }
+  },
+  {
+    id: "wrp-t6",
+    name: { en: "Kommu cheruvu Anjaneya Swamy temple", te: "కొమ్ము చెరువు ఆంజనేయ స్వామి దేవాలయం", hi: "कोम्मू चेरुवू आंजनेय स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "J642+9W8, Oudumbur Tonda, Komma Cheruvu, Kaba, Orvakal, Kurnool, Andhra Pradesh 518010", te: "J642+9W8, ఔదుంబర్ తండా, కొమ్మ చెరువు, కాబా, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "J642+9W8, औदुम्बर तंडा, कोम्मा चेरुवू, काबा, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Scenic temple located near the Komma Cheruvu lake.", te: "కొమ్మ చెరువు జలాశయం సమీపంలో ఉన్న సుందరమైన ఆలయం.", hi: "कोम्मा चेरुवू झील के पास स्थित सुंदर मंदिर।" }
+  },
+  {
+    id: "wrp-t7",
+    name: { en: "Yaganteswara Swamy temple", te: "యాగంతేశ్వర స్వామి దేవాలయం", hi: "यागंतेश्वर स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "J4JX+Q5C yaganteswara swamy, N.Konthalapadu, Orvakal, Kurnool, Andhra Pradesh 518010", te: "J4JX+Q5C యాగంతేశ్వర స్వామి, ఎన్.కొంతలపాడు, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "J4JX+Q5C यागंतेश्वर स्वामी, एन.कोंथलापाडु, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+  {
+    id: "wrp-t8",
+    name: { en: "Sri Bugga Rameswara Swamy Temple", te: "శ్రీ బుగ్గ రామేశ్వర స్వామి దేవాలయం", hi: "श्री बुग्गा रामेश्वर स्वामी मंदिर" },
+    type: "temple",
+    location: { en: "Kalvabugga, Kaba, Orvakal, Kurnool, Andhra Pradesh 518010", te: "కల్వబుగ్గ, కాబా, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "कलवाबुग्गा, काबा, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    details: { en: "Famous temple known for its natural water spring flowing around the Shiva Lingam.", te: "శివలింగం చుట్టూ ప్రవహించే సహజ సిద్ధమైన నీటి బుగ్గకు ప్రసిద్ధి చెందిన పుణ్యక్షేత్రం.", hi: "प्राकृतिक जल स्रोत के लिए प्रसिद्ध शिव मंदिर।" }
+  },
+
+  // 2. Mosques
+  {
+    id: "wrp-m1",
+    name: { en: "Jamia masjid", te: "జామియా మసీదు", hi: "जामिया मस्जिद" },
     type: "mosque",
-    location: { en: "Bazaar Lane, Orvakal", te: "బజార్ వీధి, ఓర్వకల్లు", hi: "बाजार लेन, ओरवाकल" },
-    details: {
-      en: "Centrally located mosque. Jumma prayers on Fridays from 12:30 PM - 2:00 PM.",
-      te: "ఊరి మధ్యలో ఉన్న మసీదు. ప్రతి శుక్రవారం మధ్యాహ్నం 12:30 నుండి 2:00 వరకు ప్రత్యేక ప్రార్థనలు ఉంటాయి.",
-      hi: "केंद्र में स्थित मस्जिद। शुक्रवार को दोपहर 12:30 बजे से दोपहर 2:00 बजे तक विशेष नमाज (जुम्मा)।"
-    }
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+  {
+    id: "wrp-m2",
+    name: { en: "Masjid - E - Shareef", te: "మసీదు-ఎ-షరీఫ్", hi: "मस्जिद-ए-शरीफ" },
+    type: "mosque",
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+  {
+    id: "wrp-m3",
+    name: { en: "Allah bhakshas Dargah", te: "అల్లా బక్షా దర్గా", hi: "अल्लाह बख्श दरगाह" },
+    type: "mosque",
+    location: { en: "Orvakal, Kurnool, Andhra Pradesh 518010", te: "ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+  {
+    id: "wrp-m4",
+    name: { en: "Syed sha Sultan Mehemood Shah Qadri Dargah", te: "సయ్యద్ షా సుల్తాన్ మెహమూద్ షా ఖాద్రీ దర్గా", hi: "सैयद शाह सुल्तान महमूद शाह कादरी दरगाह" },
+    type: "mosque",
+    location: { en: "Main Bazar, Orvakal, Kurnool, Andhra Pradesh 518010", te: "మెయిన్ బజార్, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "मुख्य बाजार, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+
+  // 3. Churches
+  {
+    id: "wrp-c1",
+    name: { en: "RCM Church", te: "ఆర్‌సిఎమ్ చర్చీ", hi: "आरसीएम चर्च" },
+    type: "church",
+    location: { en: "Near Busstop, Orvakal, Kurnool, Andhra Pradesh 518010", te: "బస్టాండ్ సమీపంలో, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "बस स्टॉप के पास, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
+  },
+  {
+    id: "wrp-c2",
+    name: { en: "ABM CHURCH ORVAKAL", te: "ఏబీఎమ్ చర్చీ ఓర్వకల్లు", hi: "एबीएम चर्च ओरवाकल" },
+    type: "church",
+    location: { en: "Orvakal, Kurnool, Andhra Pradesh 518010", te: "ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" }
   }
 ];
 
 export const attractions: Attraction[] = [
   {
     id: "att-1",
-    name: { en: "Orvakal Rock Garden", te: "ఓర్వకల్లు రాక్ గార్డెన్", hi: "ओरवाकल रॉक गार्डन" },
+    name: { en: "Orvakallu Rock Gardens", te: "ఓర్వకల్లు రాక్ గార్డెన్స్", hi: "ओरवाकल रॉक गार्डन" },
     description: {
       en: "Natural silica rock formations surrounded by water reservoirs. Famous shooting spot with boating, paths, restaurant and trekking.",
       te: "నీటి జలాశయాల మధ్య సహజ సిద్ధంగా ఏర్పడిన సిలికా శిలలు. బోటింగ్, పార్క్ మార్గాలు, రెస్టారెంట్ మరియు ట్రెకింగ్ స్పాట్.",
       hi: "जल जलाशयों से घिरी प्राकृतिक सिलिका चट्टानें। नौका विहार, पार्क पथ, रेस्तरां और ट्रेकिंग के साथ पर्यटन स्थल।"
     },
-    distance: { en: "3 km from Village Center", te: "గ్రామ కేంద్రం నుండి 3 కి.మీ", hi: "ग्राम केंद्र से 3 किमी" },
-    timing: { en: "8:00 AM - 6:00 PM (Entry: Rs 20)", te: "ఉదయం 8:00 - సాయంత్రం 6:00 (రూ. 20)", hi: "सुबह 8:00 - शाम 6:00 (शुल्क: रु 20)" },
+    distance: { en: "Beside Highway", te: "హైవే పక్కన", hi: "राजमार्ग के पास" },
+    timing: { en: "8:00 AM - 6:00 PM", te: "ఉదయం 8:00 - సాయంత్రం 6:00", hi: "सुबह 8:00 - शाम 6:00" },
     image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=400&q=80"
   },
   {
     id: "att-2",
-    name: { en: "Ketavaram Prehistoric Rock Paintings", te: "కేతవరం ప్రాచీన రాతి చిత్రాలు", hi: "केतवरम प्रागैतिहासिक शैल चित्र" },
+    name: { en: "Ketavaram Rock Paintings", te: "కేతవరం రాతి చిత్రాలు", hi: "केतवरम शैल चित्र" },
     description: {
       en: "Ancient rock paintings dating back to the Palaeolithic era (approx 10,000 BC) depicting bulls, deer, and human figures.",
       te: "పాత రాతియుగం కాలం నాటి పురాతన రాతి చిత్రాలు (సుమారు క్రీ.పూ 10,000). ఎడ్లు, జింకలు మరియు మానవ చిత్రాలు కనిపిస్తాయి.",
       hi: "पुरापाषाण काल ​​(लगभग 10,000 ईसा पूर्व) के प्राचीन शैल चित्र जिसमें बैल, हिरण और मानव आकृतियाँ चित्रित हैं।"
     },
-    distance: { en: "15 km from Orvakal", te: "ఓర్వకల్లు నుండి 15 కి.మీ", hi: "ओरवाकल से 15 किमी" },
-    timing: { en: "Sunrise - Sunset (Entry Free)", te: "సూర్యోదయం నుండి సూర్యాస్తమయం వరకు (ఉచితం)", hi: "सूर्योदय - सूर्यास्त (प्रवेश निःशुल्क)" },
+    distance: { en: "Ketavaram Village, Orvakal, Kurnool, Andhra Pradesh 518010", te: "కేతవరం గ్రామం, ఓర్వకల్లు, కర్నూలు, ఆంధ్రప్రదేశ్ 518010", hi: "केतवरम गाँव, ओरवाकल, कर्नूल, आंध्र प्रदेश 518010" },
+    timing: { en: "Sunrise - Sunset", te: "సూర్యోదయం నుండి సూర్యాస్తమయం వరకు", hi: "सूर्योदय - सूर्यास्त" },
     image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: "att-3",
-    name: { en: "Kurnool Airport (Orvakal Landmark)", te: "కర్నూలు విమానాశ్రయం (ఓర్వకల్లు)", hi: "कर्नूल हवाई अड्डा (ओरवाकल)" },
-    description: {
-      en: "State-of-the-art regional airport supporting domestic flights. Features solar power fields and modern flight transit desks.",
-      te: "దేశీయ విమాన సర్వీసులు అందించే అత్యాధునిక ప్రాంతీయ విమానాశ్రయం. సోలార్ విద్యుత్ ఉత్పత్తి కేంద్రం ప్రత్యేకత.",
-      hi: "घरेलू उड़ानों का समर्थन करने वाला अत्याधुनिक क्षेत्रीय हवाई अड्डा। सौर ऊर्जा क्षेत्र और आधुनिक उड़ान पारगमन डेस्क शामिल हैं।"
-    },
-    distance: { en: "4 km from Village Center", te: "గ్రామ కేంద్రం నుండి 4 కి.మీ", hi: "ग्राम केंद्र से 4 किमी" },
-    timing: { en: "Passenger hours depend on flights", te: "విమాన వేళలను బట్టి ప్రవేశం ఉంటుంది", hi: "उड़ानों के अनुसार प्रवेश समय" },
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    id: "att-4",
-    name: { en: "Yaganti Uma Maheswara Cave Temple", te: "యాగంటి ఉమామహేశ్వర స్వామి దేవాలయం & గుహలు", hi: "यागंती उमा महेश्वर गुफा मंदिर" },
-    description: {
-      en: "Famous 15th-century historical temple known for the growing stone Nandi basavanna, pushkarini pond, and Venkateswara cave.",
-      te: "పరిమాణం పెరిగే నంది విగ్రహం, పుష్కరిణి నీటి కొలను మరియు వెంకటేశ్వర గుహకు ప్రసిద్ధి చెందిన 15వ శతాబ్దపు చారిత్రక ఆలయం.",
-      hi: "बढ़ते हुए पत्थर के नंदी, पुष्करिणी तालाब और वेंकटेश्वर गुफा के लिए प्रसिद्ध 15वीं शताब्दी का ऐतिहासिक मंदिर।"
-    },
-    distance: { en: "35 km from Orvakal", te: "ఓర్వకల్లు నుండి 35 కి.మీ", hi: "ओरवाकल से 35 किमी" },
-    timing: { en: "6:00 AM - 1:00 PM, 3:00 PM - 8:00 PM", te: "ఉదయం 6:00 - మధ్యాహ్నం 1:00, సాయంత్రం 3:00 - రాత్రి 8:00", hi: "सुबह 6:00 - दोपहर 1:00, दोपहर 3:00 - रात 8:00" },
-    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=400&q=80"
   }
 ];
 

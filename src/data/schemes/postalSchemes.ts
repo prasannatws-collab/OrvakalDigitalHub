@@ -1,4 +1,4 @@
-import type { GovtScheme } from '../mockData';
+import type { GovtScheme } from '../../types';
 
 export const postalSchemes: GovtScheme[] = [
   {
